@@ -10,6 +10,22 @@ public class VendingMachine {
     private String[] itemNames;
     private BigDecimal[] itemPrices;
     private int[] itemQuantity;
+    Vendable[] arrayOfVendables;
+
+    /*public VendingMachine(Vendable[] arrayOfVendables){
+        this.arrayOfVendables = arrayOfVendables;
+
+    }
+     */
+
+    public Vendable[] getArrayOfVendables(){
+        arrayOfVendables = new Vendable[SLOTS.length];
+        Chips potatoCrisps = new Chips(new BigDecimal("3.05"),"Potato Crisps");
+        arrayOfVendables[0] = potatoCrisps;
+
+        return arrayOfVendables;
+
+    }
 
     public void displayInventory(){
         /*String[] slots = {"A1","A2","A3","A4","B1","B2","B3","B4","C1","C2","C3","C4","D1","D2","D3","D4",};
@@ -22,13 +38,15 @@ public class VendingMachine {
                 new BigDecimal("1.80"),new BigDecimal("1.50"),new BigDecimal("1.50"),new BigDecimal("1.75"),
                 new BigDecimal("1.25"),new BigDecimal("1.50"),new BigDecimal("1.50"),new BigDecimal("1.50"),
                 new BigDecimal("0.85"), new BigDecimal(".95"), new BigDecimal("0.75"),new BigDecimal("0.75")};
+  */
+        int itemQuantity = 5;
 
-        int[] itemQuantity = new int[itemNames.length];
-        */
+        for (int i = 0; i < getArrayOfVendables().length; i++) {
 
-        for (int i = 0; i < itemNames.length; i++) {
-            itemQuantity[i] = 5;
-            System.out.println(SLOTS[i] + ": " + itemNames[i] + ": " + NumberFormat.getCurrencyInstance().format(itemPrices[i]) + ": " + itemQuantity[i]);
+            System.out.println(getArrayOfVendables()[i].getName() + NumberFormat.getCurrencyInstance().format(getArrayOfVendables()[i].getPrice()) + ": " + itemQuantity);
+
+            //itemQuantity[i] = 5;
+            //System.out.println(SLOTS[i] + ": " + itemNames[i] + ": " + NumberFormat.getCurrencyInstance().format(itemPrices[i]) + ": " + itemQuantity[i]);
         }
     }
 
