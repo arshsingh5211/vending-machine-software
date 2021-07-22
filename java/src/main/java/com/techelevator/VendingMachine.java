@@ -26,7 +26,7 @@ public class VendingMachine {
     }
 
     public void feedMoney(){
-    	BigDecimal[] options = new BigDecimal[] {new BigDecimal("1.00"), new BigDecimal("5.00"), new BigDecimal("10.00"), new BigDecimal("20.00")};
+    	BigDecimal[] feedMoneyOptions = new BigDecimal[] {new BigDecimal("1.00"), new BigDecimal("5.00"), new BigDecimal("10.00"), new BigDecimal("20.00")};
     	boolean run = true;
     	while (run) {
 			System.out.println("\n1. $1\t\t\t\t2. $5");
@@ -35,9 +35,9 @@ public class VendingMachine {
 
 			int selection = console.nextInt();
 			if (selection > 0 && selection < 5) {
-				balance = balance.add(options[selection - 1]);
+				balance = balance.add(feedMoneyOptions[selection - 1]);
 				run = false;
-				System.out.println("Thanks! Your new balance is " + balance + ".");
+				System.out.println("Thanks! Your new balance is " + NumberFormat.getCurrencyInstance().format(balance) + ".");
 			} 
 			else System.err.print("Sorry, invalid selection! Please enter a selection (1-4) that corresponds to amount to deposit"); 
         }
