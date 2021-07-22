@@ -15,42 +15,12 @@ public class VendingMachine {
     Vendable[] arrayOfVendables = new Vendable[SLOTS.length];
     Scanner console = new Scanner(System.in);
 
-    public Vendable[] getArrayOfVendables(){
-        //arrayOfVendables = new Vendable[SLOTS.length];
-        Chips potatoCrisps = new Chips(new BigDecimal("3.05"),"Potato Crisps");
-        Chips stackers = new Chips(new BigDecimal("1.45"), "Stackers");
-        arrayOfVendables[0] = potatoCrisps;
-        arrayOfVendables[1] = stackers;
-
-        return arrayOfVendables;
-
-    }
-
     public void displayInventory(){
-        /*String[] slots = {"A1","A2","A3","A4","B1","B2","B3","B4","C1","C2","C3","C4","D1","D2","D3","D4",};
-
-        String[] itemNames = {"Potato Crisps", "Stackers", "Grain Waves","Cloud Popcorn",
-                "Moonpie", "Cowtails", "Wonka Bar", "Crunchie","Cola", "Dr. Salt", "Mountain Melter",
-                "Heavy", "U-Chews", "Little League Chew", "Chiclets", "Triplemint"};
-
-        BigDecimal[] itemPrices = {new BigDecimal("3.05"), new BigDecimal("1.45"), new BigDecimal("2.75"),new BigDecimal("3.65"),
-                new BigDecimal("1.80"),new BigDecimal("1.50"),new BigDecimal("1.50"),new BigDecimal("1.75"),
-                new BigDecimal("1.25"),new BigDecimal("1.50"),new BigDecimal("1.50"),new BigDecimal("1.50"),
-                new BigDecimal("0.85"), new BigDecimal(".95"), new BigDecimal("0.75"),new BigDecimal("0.75")};
-  */
+    	Vendable[] vendableArr = getArrayOfVendables();
         int itemQuantity = 5;
-
-        try {
-            for (int i = 0; i < getArrayOfVendables().length; i++) {
-
-                System.out.println(SLOTS[i] + ": " + getArrayOfVendables()[i].getName() + ": " + getArrayOfVendables()[i].getPrice() + ": ");
-
-                //itemQuantity[i] = 5;
-                //System.out.println(SLOTS[i] + ": " + itemNames[i] + ": " + NumberFormat.getCurrencyInstance().format(itemPrices[i]) + ": " + itemQuantity[i]);
-            }
-        } catch (Exception e) {
-            System.out.println("Array is null");
-            e.printStackTrace();
+        for (int i = 0; i < vendableArr.length; i++) {
+        	System.out.println(SLOTS[i] + ": " + vendableArr[i].getName() + ": " + 
+        			NumberFormat.getCurrencyInstance().format(vendableArr[i].getPrice()) + ": ");
         }
     }
 
@@ -90,7 +60,68 @@ public class VendingMachine {
 
     }
 
-    public BigDecimal getBalance() {
+    public String[] getItemNames() {
+		return itemNames;
+	}
+
+	public void setItemNames(String[] itemNames) {
+		this.itemNames = itemNames;
+	}
+
+	public BigDecimal[] getItemPrices() {
+		return itemPrices;
+	}
+
+	public void setItemPrices(BigDecimal[] itemPrices) {
+		this.itemPrices = itemPrices;
+	}
+
+	public int[] getItemQuantity() {
+		return itemQuantity;
+	}
+
+	public void setItemQuantity(int[] itemQuantity) {
+		this.itemQuantity = itemQuantity;
+	}
+
+	public Scanner getConsole() {
+		return console;
+	}
+
+	public String[] getSLOTS() {
+		return SLOTS;
+	}
+	
+	public Vendable[] getArrayOfVendables(){
+        Chips potatoCrisps = new Chips(new BigDecimal("3.05"),"Potato Crisps");
+        Chips stackers = new Chips(new BigDecimal("1.45"), "Stackers");
+        arrayOfVendables[0] = potatoCrisps;
+        arrayOfVendables[1] = stackers;
+        arrayOfVendables[2] = potatoCrisps;
+        arrayOfVendables[3] = stackers;
+        arrayOfVendables[4] = potatoCrisps;
+        arrayOfVendables[5] = stackers;
+        arrayOfVendables[6] = potatoCrisps;
+        arrayOfVendables[7] = stackers;
+        arrayOfVendables[8] = potatoCrisps;
+        arrayOfVendables[9] = stackers;
+        arrayOfVendables[10] = potatoCrisps;
+        arrayOfVendables[11] = stackers;
+        arrayOfVendables[12] = potatoCrisps;
+        arrayOfVendables[13] = stackers;
+        arrayOfVendables[14] = potatoCrisps;
+        arrayOfVendables[15] = stackers;
+        
+
+        return arrayOfVendables;
+
+    }
+
+	public void setArrayOfVendables(Vendable[] arrayOfVendables) {
+		this.arrayOfVendables = arrayOfVendables;
+	}
+
+	public BigDecimal getBalance() {
         return balance;
     }
 
