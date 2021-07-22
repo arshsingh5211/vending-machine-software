@@ -3,6 +3,7 @@ package com.techelevator;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Currency;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class VendingMachine {
@@ -54,17 +55,27 @@ public class VendingMachine {
     }
 
     public void feedMoney(){
-        String amountToDeposit = "";
-        boolean run = true;
 
-        while(run){
-            System.out.println("Please select whole dollar amount to deposit: ");
-            if(console.hasNextInt()){
-                amountToDeposit = console.nextLine();
-                run = false;
+        try{
+            String amountToDeposit = "";
+            boolean run = true;
+
+            while (run) {
+                System.out.println("1) $1   2) $5");
+                System.out.println("3) $10  4) $20");
+                System.out.print("Please select the number of the amount you would like to deposit: ");
+
+                int selection = console.nextInt();
+
+                if (selection > 0 && selection < 5) {
+                    run = false;
+                } else {
+                    System.out.println("Sorry, invalid selection. Please enter a selection (1-4) that corresponds to amount to deposit");
+                }
             }
+        }catch (InputMismatchException e) {
+            System.out.println("Sorry, invalid selection. PROGRAM TERMINATED");
         }
-
     }
     public void selectProduct(){
 
