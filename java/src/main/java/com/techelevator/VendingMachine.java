@@ -3,14 +3,16 @@ package com.techelevator;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Currency;
+import java.util.Scanner;
 
 public class VendingMachine {
-    private BigDecimal balance;
+    private BigDecimal balance = new BigDecimal("0.00");
     private final String[] SLOTS = {"A1","A2","A3","A4","B1","B2","B3","B4","C1","C2","C3","C4","D1","D2","D3","D4"};
     private String[] itemNames;
     private BigDecimal[] itemPrices;
     private int[] itemQuantity;
     Vendable[] arrayOfVendables = new Vendable[SLOTS.length];
+    Scanner console = new Scanner(System.in);
 
     public Vendable[] getArrayOfVendables(){
         //arrayOfVendables = new Vendable[SLOTS.length];
@@ -52,6 +54,16 @@ public class VendingMachine {
     }
 
     public void feedMoney(){
+        String amountToDeposit = "";
+        boolean run = true;
+
+        while(run){
+            System.out.println("Please select whole dollar amount to deposit: ");
+            if(console.hasNextInt()){
+                amountToDeposit = console.nextLine();
+                run = false;
+            }
+        }
 
     }
     public void selectProduct(){
@@ -65,6 +77,10 @@ public class VendingMachine {
     }
     public void recordTransaction(){
 
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
     }
 
     /*

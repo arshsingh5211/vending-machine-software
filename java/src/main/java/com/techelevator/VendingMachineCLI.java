@@ -3,6 +3,7 @@ package com.techelevator;
 import com.techelevator.view.Menu;
 
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class VendingMachineCLI {
 
@@ -36,8 +37,22 @@ public class VendingMachineCLI {
 	}
 
 	public static void main(String[] args) {
-		Menu menu = new Menu(System.in, System.out);
+		/*Menu menu = new Menu(System.in, System.out);
 		VendingMachineCLI cli = new VendingMachineCLI(menu);
 		cli.run();
+		*/
+		Scanner console = new Scanner(System.in);
+		String amountToDeposit = "";
+		boolean run = true;
+		System.out.println("Please select whole dollar amount to deposit: ");
+		while(run){
+			String response = console.nextLine();
+			if(response.){
+				amountToDeposit = console.nextLine();
+				run = false;
+			} else {
+				System.out.println("Not a valid amount, please try again ");
+			}
+		}
 	}
 }
