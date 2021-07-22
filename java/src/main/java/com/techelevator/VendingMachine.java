@@ -10,18 +10,14 @@ public class VendingMachine {
     private String[] itemNames;
     private BigDecimal[] itemPrices;
     private int[] itemQuantity;
-    Vendable[] arrayOfVendables;
-
-    /*public VendingMachine(Vendable[] arrayOfVendables){
-        this.arrayOfVendables = arrayOfVendables;
-
-    }
-     */
+    Vendable[] arrayOfVendables = new Vendable[SLOTS.length];
 
     public Vendable[] getArrayOfVendables(){
-        arrayOfVendables = new Vendable[SLOTS.length];
+        //arrayOfVendables = new Vendable[SLOTS.length];
         Chips potatoCrisps = new Chips(new BigDecimal("3.05"),"Potato Crisps");
+        Chips stackers = new Chips(new BigDecimal("1.45"), "Stackers");
         arrayOfVendables[0] = potatoCrisps;
+        arrayOfVendables[1] = stackers;
 
         return arrayOfVendables;
 
@@ -41,12 +37,17 @@ public class VendingMachine {
   */
         int itemQuantity = 5;
 
-        for (int i = 0; i < getArrayOfVendables().length; i++) {
+        try {
+            for (int i = 0; i < getArrayOfVendables().length; i++) {
 
-            System.out.println(getArrayOfVendables()[i].getName() + NumberFormat.getCurrencyInstance().format(getArrayOfVendables()[i].getPrice()) + ": " + itemQuantity);
+                System.out.println(SLOTS[i] + ": " + getArrayOfVendables()[i].getName() + ": " + getArrayOfVendables()[i].getPrice() + ": ");
 
-            //itemQuantity[i] = 5;
-            //System.out.println(SLOTS[i] + ": " + itemNames[i] + ": " + NumberFormat.getCurrencyInstance().format(itemPrices[i]) + ": " + itemQuantity[i]);
+                //itemQuantity[i] = 5;
+                //System.out.println(SLOTS[i] + ": " + itemNames[i] + ": " + NumberFormat.getCurrencyInstance().format(itemPrices[i]) + ": " + itemQuantity[i]);
+            }
+        } catch (Exception e) {
+            System.out.println("Array is null");
+            e.printStackTrace();
         }
     }
 
