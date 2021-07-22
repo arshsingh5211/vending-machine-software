@@ -12,6 +12,11 @@ public class VendingMachineCLI {
 	private static final String MAIN_MENU_OPTION_PURCHASE = "Purchase";
 	private static final String MAIN_MENU_OPTION_EXIT = "Exit";
 	private static final String[] MAIN_MENU_OPTIONS = {MAIN_MENU_OPTION_DISPLAY_ITEMS, MAIN_MENU_OPTION_PURCHASE, MAIN_MENU_OPTION_EXIT};
+	
+	private static final String   PURCHASE_MENU_FEED_MONEY = "Feed Money";
+	private static final String   PURCHASE_MENU_SELECT_ITEM = "Select Item";
+	private static final String   PURCHASE_MENU_EXIT = "Exit to Main Menu";
+	private static final String[] PURCHASE_MENU_OPTIONS = { PURCHASE_MENU_FEED_MONEY, PURCHASE_MENU_SELECT_ITEM, PURCHASE_MENU_EXIT };
 
 	private VendingMachine vm = new VendingMachine();
 	private Menu menu;
@@ -27,12 +32,23 @@ public class VendingMachineCLI {
 			if (choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
 				// display vending machine items
 				vm.displayInventory();
-			} else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
-				// do purchase
-			} else if (choice.equals(MAIN_MENU_OPTION_EXIT)) {
-				System.out.println("Have a nice day");
+			} 
+			else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
+					String purchaseMenuChoice = (String)menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
+					
+					if (purchaseMenuChoice.equals(PURCHASE_MENU_FEED_MONEY)) {
+						vm.feedMoney();
+					}
+					else if (purchaseMenuChoice.equals(PURCHASE_MENU_SELECT_ITEM)) {
+						vm.selectProduct();
+					}
+					else if (purchaseMenuChoice.equals(PURCHASE_MENU_EXIT)) {
+						break;
+					}
+			} 
+			else if (choice.equals(MAIN_MENU_OPTION_EXIT)) {
+		        System.out.println("\nThank you for using Vendo-Matic 800! Have a nice day.");
 				break;
-
 			}
 		}
 	}

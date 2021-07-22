@@ -18,6 +18,7 @@ public class VendingMachine {
     public void displayInventory(){
     	Vendable[] vendableArr = getArrayOfVendables();
         int itemQuantity = 5;
+        System.out.println("\nWelcome to Vendo-Matic 800!\n\n");
         for (int i = 0; i < vendableArr.length; i++) {
         	System.out.println(SLOTS[i] + ": " + vendableArr[i].getName() + ": " + 
         			NumberFormat.getCurrencyInstance().format(vendableArr[i].getPrice()) + ": ");
@@ -25,28 +26,24 @@ public class VendingMachine {
     }
 
     public void feedMoney(){
+    	BigDecimal[] options = new BigDecimal[] {new BigDecimal("1.00"), new BigDecimal("5.00"), new BigDecimal("10.00"), new BigDecimal("20.00")};
+    	boolean run = true;
+    	while (run) {
+			System.out.println("\n1. $1\t\t\t\t2. $5");
+			System.out.println("3. $10\t\t\t\t4. $20 ");
+			System.out.print("\nPlease select the number corresponding to your choice: ");
 
-        try{
-            String amountToDeposit = "";
-            boolean run = true;
-
-            while (run) {
-                System.out.println("1) $1   2) $5");
-                System.out.println("3) $10  4) $20");
-                System.out.print("Please select the number of the amount you would like to deposit: ");
-
-                int selection = console.nextInt();
-
-                if (selection > 0 && selection < 5) {
-                    run = false;
-                } else {
-                    System.out.println("Sorry, invalid selection. Please enter a selection (1-4) that corresponds to amount to deposit");
-                }
-            }
-        }catch (InputMismatchException e) {
-            System.out.println("Sorry, invalid selection. PROGRAM TERMINATED");
+			int selection = console.nextInt();
+			if (selection > 0 && selection < 5) {
+				balance = balance.add(options[selection - 1]);
+				run = false;
+				System.out.println("Thanks! Your new balance is " + balance + ".");
+			} 
+			else System.err.print("Sorry, invalid selection! Please enter a selection (1-4) that corresponds to amount to deposit"); 
         }
     }
+    
+    
     public void selectProduct(){
 
     }
