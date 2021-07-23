@@ -1,7 +1,11 @@
 package com.techelevator;
 
+import java.io.File;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Currency;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -13,6 +17,7 @@ public class VendingMachine {
     private BigDecimal[] itemPrices;
     private int[] itemQuantity;
     Vendable[] arrayOfVendables = new Vendable[SLOTS.length];
+
     Scanner console = new Scanner(System.in);
 
     public Vendable[] getArrayOfVendables(){
@@ -63,7 +68,7 @@ public class VendingMachine {
             while (run) {
                 System.out.println("1) $1   2) $5");
                 System.out.println("3) $10  4) $20");
-                System.out.print("Please select the number of the amount you would like to deposit: ");
+                System.out.print("Please select the number (1-4) of the amount you would like to deposit: ");
 
                 int selection = console.nextInt();
 
@@ -80,14 +85,34 @@ public class VendingMachine {
     public void selectProduct(){
 
     }
-    public void finishTransaction(){
+    public void finishTransaction() {
+        //calculate change
+        //reset balance to $0
+        String finish = "Your transaction is now complete. You may now collect your change.";
+        //return to main menu --> return to run somehow?
+
+
 
     }
+
     public void getChange(){
 
     }
     public void recordTransaction(){
-
+        String currentDirectory = System.getProperty("user.dir");
+        File transactionLog = new File(currentDirectory + "/log.txt");
+        try(PrintWriter pw = new PrintWriter(transactionLog)) {
+            transactionLog.createNewFile();
+            //collect data from transaction for printing
+            PrintWriter dataOutput = new PrintWriter(transactionLog) {
+                DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
+                LocalDateTime currentDateTime = LocalDateTime.now();
+                String dateTimeFormatted = currentDateTime.format(dateFormat);
+                //pw.println(dateTimeFormatted + Transaction type? + mystery$amounts;
+            }
+        }catch(Exception ex){
+            System.out.println(ex);
+        }
     }
 
     public BigDecimal getBalance() {
