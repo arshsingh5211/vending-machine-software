@@ -16,9 +16,16 @@ public class VendingMachine {
     private String[] itemNames;
     private BigDecimal[] itemPrices;
     private int[] itemQuantity;
-    Vendable[] arrayOfVendables = new Vendable[SLOTS.length];
+    private Vendable[] arrayOfVendables;
 
     Scanner console = new Scanner(System.in);
+
+    public void stockInventory() {
+        for (Vendable item : getArrayOfVendables()) {
+
+        }
+    }
+
 
     public void displayInventory(){
     	Vendable[] vendableArr = getArrayOfVendables();
@@ -26,7 +33,7 @@ public class VendingMachine {
         System.out.println("\nWelcome to Vendo-Matic 800!\n\n");
         for (int i = 0; i < vendableArr.length; i++) {
         	System.out.println(SLOTS[i] + ": " + vendableArr[i].getName() + ": " + 
-        			NumberFormat.getCurrencyInstance().format(vendableArr[i].getPrice()) + ": ");
+        			NumberFormat.getCurrencyInstance().format(vendableArr[i].getPrice()) + ": "); // ADD QUANTITY REMAINING
         }
     }
 
@@ -81,6 +88,7 @@ public class VendingMachine {
         //calculate change
         //reset balance to $0
         String finish = "Your transaction is now complete. You may now collect your change.";
+        // make sure everything is restocked to 5
         //return to main menu --> return to run somehow?
 
 
@@ -101,7 +109,7 @@ public class VendingMachine {
         System.out.println("Enter the amount paid: ");
         BigDecimal amountPaid = scanner.nextBigDecimal();
 
-        BigDecimal changeDue = salePrice - amountPaid;
+        BigDecimal changeDue = salePrice.subtract(amountPaid); // int - int (or any primitive)
         BigDecimal dollars = (BigDecimal) changeDue;
 
         System.out.println("Return" + dollars + "Dollars");
@@ -110,18 +118,18 @@ public class VendingMachine {
 
     }
     public void recordTransaction(){
-        String currentDirectory = System.getProperty("user.dir");
-        File transactionLog = new File(currentDirectory + "/log.txt");
-        try(PrintWriter pw = new PrintWriter(transactionLog)) {
-            transactionLog.createNewFile();
+        String currentDirectory = System.getProperty("user.dir"); // get directory
+        File transactionLog = new File(currentDirectory + "/log.txt"); // create new file object
+        try (PrintWriter pw = new PrintWriter(transactionLog)) { // try with resources
+            transactionLog.createNewFile(); // create actual file
             //collect data from transaction for printing
-            PrintWriter dataOutput = new PrintWriter(transactionLog) {
+            //PrintWriter dataOutput = new PrintWriter(transactionLog) {
                 DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
                 LocalDateTime currentDateTime = LocalDateTime.now();
                 String dateTimeFormatted = currentDateTime.format(dateFormat);
                 //pw.println(dateTimeFormatted + Transaction type? + mystery$amounts;
             }
-        }catch(Exception ex){
+        catch(Exception ex){
             System.out.println(ex);
         }
     }
@@ -159,24 +167,15 @@ public class VendingMachine {
 	}
 	
 	public Vendable[] getArrayOfVendables(){
-        Chips potatoCrisps = new Chips(new BigDecimal("3.05"),"Potato Crisps");
-        Chips stackers = new Chips(new BigDecimal("1.45"), "Stackers");
-        arrayOfVendables[0] = potatoCrisps;
-        arrayOfVendables[1] = stackers;
-        arrayOfVendables[2] = potatoCrisps;
-        arrayOfVendables[3] = stackers;
-        arrayOfVendables[4] = potatoCrisps;
-        arrayOfVendables[5] = stackers;
-        arrayOfVendables[6] = potatoCrisps;
-        arrayOfVendables[7] = stackers;
-        arrayOfVendables[8] = potatoCrisps;
-        arrayOfVendables[9] = stackers;
-        arrayOfVendables[10] = potatoCrisps;
-        arrayOfVendables[11] = stackers;
-        arrayOfVendables[12] = potatoCrisps;
-        arrayOfVendables[13] = stackers;
-        arrayOfVendables[14] = potatoCrisps;
-        arrayOfVendables[15] = stackers;
+        arrayOfVendables = new Vendable[]{new Chips(new BigDecimal("3.05"), "Potato Crisps"), new Chips(new BigDecimal("1.45"), "Stackers"),
+                new Chips(new BigDecimal("2.75"), "Grain Waves"), new Chips(new BigDecimal("3.65"), "Cloud Popcorn"),
+                new Candy(new BigDecimal("1.80"), "Moonpie"), new Candy(new BigDecimal("1.50"), "Cowtales"),
+                new Candy(new BigDecimal("1.50"), "Wonka Bar"), new Candy(new BigDecimal("1.75"), "Crunchie"),
+                new Beverages(new BigDecimal("1.25"), "Cola"), new Beverages(new BigDecimal("1.50"), "Dr. Salt"),
+                new Beverages(new BigDecimal("1.50"), "Mountain Melter"), new Beverages(new BigDecimal("1.50"), "Heavy"),
+                new Gum(new BigDecimal("0.85"), "U-Chews"), new Gum(new BigDecimal("0.95"), "Little League Chew"),
+                new Gum(new BigDecimal("0.75"), "Chiclets"), new Gum(new BigDecimal("0.75"), "Triplemint")
+        };
         
 
         return arrayOfVendables;
