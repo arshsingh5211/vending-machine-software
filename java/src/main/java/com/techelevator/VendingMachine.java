@@ -59,9 +59,11 @@ public class VendingMachine {
     
     
     public void selectProduct(){
+        Vendable[] vendableArr = getArrayOfVendables();
         // need print statement of all slots and their vendable items
-        for (int i = 0; i < getArrayOfVendables().length; i++) {
-            System.out.println(" [" + SLOTS[i] + "] " + getArrayOfVendables()[i].getName() + " (" + NumberFormat.getCurrencyInstance().format(getArrayOfVendables()[i].getPrice()) + ")");
+        for (int i = 0; i < arrayOfVendables.length; i++) {
+            System.out.println(" [" + SLOTS[i] + "] " + arrayOfVendables[i].getName() + " (" + NumberFormat.getCurrencyInstance().format(getArrayOfVendables()[i].getPrice()) + ")");
+            // add quantity remaining!!
         }
         boolean run = true;
         while (run) {
@@ -80,7 +82,10 @@ public class VendingMachine {
                 // we need to add a check somewhere to make sure balance is never below $0
                 // rn it lets you keep buying stuff even if your balance would fall below 0 after purchase
             }
-            else System.err.print("Sorry, invalid selection! Please enter a selection (1-16) that corresponds to a product.");
+            // if there entry is beyond array length then one error message to try again, if it's not enough money take back to purchase menu
+            // loop back to previous menu
+            else System.err.print("Sorry, invalid selection! Please feed more money or choose a different item.");
+            // ******Needs to go back to purchase menu instead of asking for a selection again.************
         }
     }
 
@@ -167,6 +172,7 @@ public class VendingMachine {
 	}
 	
 	public Vendable[] getArrayOfVendables(){
+        // Chips varName = new Chips();
         arrayOfVendables = new Vendable[]{new Chips(new BigDecimal("3.05"), "Potato Crisps"), new Chips(new BigDecimal("1.45"), "Stackers"),
                 new Chips(new BigDecimal("2.75"), "Grain Waves"), new Chips(new BigDecimal("3.65"), "Cloud Popcorn"),
                 new Candy(new BigDecimal("1.80"), "Moonpie"), new Candy(new BigDecimal("1.50"), "Cowtales"),

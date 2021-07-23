@@ -36,23 +36,30 @@ public class VendingMachineCLI {
 				vm.displayInventory();
 			} 
 			else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
-					String purchaseMenuChoice = (String)menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
-					
-					if (purchaseMenuChoice.equals(PURCHASE_MENU_FEED_MONEY)) {
-						vm.feedMoney();
-						menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS); // we want to take user back to purchase menu once they add money
-						// this won't let user choose something from purchase menu, no matter what you input takes you back to main menu. fix???
-					}
-					else if (purchaseMenuChoice.equals(PURCHASE_MENU_SELECT_ITEM)) {
-						vm.selectProduct();
-					}
-					else if (purchaseMenuChoice.equals(PURCHASE_MENU_EXIT)) {
-						break; // this ends the program when we want to go back to main menu. fix!
-					}
+					this.purchaseMenu();
 			} 
-			else if (choice.equals(MAIN_MENU_OPTION_EXIT)) {
+			else if (choice.equals(MAIN_MENU_OPTION_EXIT)) { // exits system not exits to main menu as README asked
 		        System.out.println("\nThank you for using Vendo-Matic 800! Have a nice day.");
 				break;
+			}
+		}
+	}
+
+	public void purchaseMenu() {
+		boolean run = true;
+		while (run) {
+			String purchaseMenuChoice = (String)menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
+
+			if (purchaseMenuChoice.equals(PURCHASE_MENU_FEED_MONEY)) {
+				vm.feedMoney();
+				menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS); // we want to take user back to purchase menu once they add money
+				// this won't let user choose something from purchase menu, no matter what you input takes you back to main menu. fix???
+			}
+			else if (purchaseMenuChoice.equals(PURCHASE_MENU_SELECT_ITEM)) {
+				vm.selectProduct();
+			}
+			else if (purchaseMenuChoice.equals(PURCHASE_MENU_EXIT)) {
+				break; // this ends the program when we want to go back to main menu. fix!
 			}
 		}
 	}
@@ -61,7 +68,6 @@ public class VendingMachineCLI {
 		Menu menu = new Menu(System.in, System.out);
 		VendingMachineCLI cli = new VendingMachineCLI(menu);
 		cli.run();
-
 
 
 	}
