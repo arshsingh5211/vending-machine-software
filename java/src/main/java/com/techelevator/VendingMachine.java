@@ -88,6 +88,25 @@ public class VendingMachine {
     }
 
     public void getChange(){
+        Scanner scanner = new Scanner(System.in);
+        BigDecimal selectionPrice;
+
+        String userStringInput;
+        BigDecimal userCost;
+        BigDecimal userChange;
+
+        System.out.println("Enter the purchase price: ");
+        BigDecimal salePrice = scanner.nextBigDecimal();
+
+        System.out.println("Enter the amount paid: ");
+        BigDecimal amountPaid = scanner.nextBigDecimal();
+
+        BigDecimal changeDue = salePrice - amountPaid;
+        BigDecimal dollars = (BigDecimal) changeDue;
+
+        System.out.println("Return" + dollars + "Dollars");
+
+        scanner.close();
 
     }
     public void recordTransaction(){
