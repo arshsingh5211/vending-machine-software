@@ -15,7 +15,7 @@ public class VendingMachine {
     private final String[] SLOTS = {"A1","A2","A3","A4","B1","B2","B3","B4","C1","C2","C3","C4","D1","D2","D3","D4"};
     private String[] itemNames;
     private BigDecimal[] itemPrices;
-    private int[] itemQuantity;
+    private int itemQuantity;
     private Vendable[] arrayOfVendables;
 
     Scanner console = new Scanner(System.in);
@@ -25,6 +25,10 @@ public class VendingMachine {
 
         }
     }
+
+    // stack of numbers 1 -5
+    // Stack of Vendable items, have 5 in stack, and after each purchase, take from stack
+    // stack.size() to get how many items are in the stack
 
 
     public void displayInventory(){
@@ -160,11 +164,11 @@ public class VendingMachine {
 		this.itemPrices = itemPrices;
 	}
 
-	public int[] getItemQuantity() {
+	public int getItemQuantity() {
 		return itemQuantity;
 	}
 
-	public void setItemQuantity(int[] itemQuantity) {
+	public void setItemQuantity(int itemQuantity) {
 		this.itemQuantity = itemQuantity;
 	}
 
