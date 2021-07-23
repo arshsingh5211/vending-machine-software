@@ -1,6 +1,7 @@
 package com.techelevator;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -17,8 +18,16 @@ public class VendingMachine {
     private BigDecimal[] itemPrices;
     private int[] itemQuantity;
     private Vendable[] arrayOfVendables;
+    private File transactionLog = new File("log.txt");
+    private BigDecimal previousBalance;
 
     Scanner console = new Scanner(System.in);
+
+    // add quantity remaining!!
+    //need to let user select slots instead of numbers
+    //need to update transactionLog report for select product and giveChange
+    //track quantity throughout class
+    //press 3 in main menu to terminate program 
 
     public void stockInventory() {
         for (Vendable item : getArrayOfVendables()) {
@@ -38,6 +47,7 @@ public class VendingMachine {
     }
 
     public void feedMoney(){
+        previousBalance = balance;
         String amountToDeposit = "";
     	BigDecimal[] feedMoneyOptions = new BigDecimal[] {new BigDecimal("1.00"), new BigDecimal("5.00"), new BigDecimal("10.00"), new BigDecimal("20.00")};
     	boolean run = true;
@@ -55,6 +65,8 @@ public class VendingMachine {
 			} 
 			else System.err.print("Sorry, invalid selection! Please enter a selection (1-4) that corresponds to amount to deposit"); 
         }
+    	logTransaction(previousBalance);
+
     }
     
     
@@ -64,6 +76,8 @@ public class VendingMachine {
         for (int i = 0; i < arrayOfVendables.length; i++) {
             System.out.println(" [" + SLOTS[i] + "] " + arrayOfVendables[i].getName() + " (" + NumberFormat.getCurrencyInstance().format(getArrayOfVendables()[i].getPrice()) + ")");
             // add quantity remaining!!
+            //need to let user select slots instead of numbers
+
         }
         boolean run = true;
         while (run) {
@@ -127,17 +141,42 @@ public class VendingMachine {
 
 
     }
-    public void recordTransaction(){
+
+
+    public void createLogFile(){
         String currentDirectory = System.getProperty("user.dir"); // get directory
         File transactionLog = new File(currentDirectory + "/log.txt"); // create new file object
-        try (PrintWriter pw = new PrintWriter(transactionLog)) { // try with resources
-            transactionLog.createNewFile(); // create actual file
+
+        try {
+
+            if (!transactionLog.exists()) {
+                transactionLog.createNewFile();
+            }
+
+        } catch(Exception e){
+            System.out.println(e);
+        }
+        /*
+        feed money log
+        select product log - item picked and slot it was in
+        give change - finish transaction - create file as instance
+         */
+    }
+
+    public void logTransaction(BigDecimal previousBalance){
+        createLogFile();
+        try (FileWriter fileWriter = new FileWriter(transactionLog,true);
+                PrintWriter pw = new PrintWriter(fileWriter)) { // try with resources
+            //transactionLog.createNewFile(); // create actual file
             //collect data from transaction for printing
             //PrintWriter dataOutput = new PrintWriter(transactionLog) {
                 DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
                 LocalDateTime currentDateTime = LocalDateTime.now();
                 String dateTimeFormatted = currentDateTime.format(dateFormat);
-                //pw.println(dateTimeFormatted + Transaction type? + starting and ending balance after transaction activity);
+                pw.println(dateTimeFormatted + "Feed Money: " + NumberFormat.getCurrencyInstance().format(previousBalance)
+                        + " " + NumberFormat.getCurrencyInstance().format(balance));
+
+
             }
         catch(Exception ex){
             System.out.println(ex);
