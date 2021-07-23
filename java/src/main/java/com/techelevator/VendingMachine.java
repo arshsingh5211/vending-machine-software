@@ -27,7 +27,7 @@ public class VendingMachine {
     //need to let user select slots instead of numbers
     //need to update transactionLog report for select product and giveChange
     //track quantity throughout class
-    //press 3 in main menu to terminate program 
+    //press 3 in main menu to terminate program
 
     public void stockInventory() {
         for (Vendable item : getArrayOfVendables()) {
