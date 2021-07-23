@@ -92,34 +92,39 @@ public class VendingMachine {
     public void finishTransaction() {
         //calculate change
         //reset balance to $0
-        String finish = "Your transaction is now complete. You may now collect your change.";
+        System.out.println("\nYour transaction is now complete. You may now collect your change.\n");
+        this.getChange();
+
         // make sure everything is restocked to 5
         //return to main menu --> return to run somehow?
-
-
 
     }
 
     public void getChange(){
-        Scanner scanner = new Scanner(System.in);
-        BigDecimal selectionPrice;
+        int changeInPennies = balance.intValue()*100;
+        int numbersOfQuarters = 0;
+        int numberOfDimes = 0;
+        int numberOfNickels = 0;
 
-        String userStringInput;
-        BigDecimal userCost;
-        BigDecimal userChange;
+        while(changeInPennies > 0){
+            numbersOfQuarters = changeInPennies / 25;
+            changeInPennies = changeInPennies % 25;
+            numberOfDimes = changeInPennies / 10;
+            changeInPennies = changeInPennies % 10;
+            numberOfNickels = changeInPennies / 5;
+        }
+        /*
+        get change using the smallest amount of coins possible
+         */
 
-        System.out.println("Enter the purchase price: ");
-        BigDecimal salePrice = scanner.nextBigDecimal();
 
-        System.out.println("Enter the amount paid: ");
-        BigDecimal amountPaid = scanner.nextBigDecimal();
+        //BigDecimal changeDue = salePrice.subtract(amountPaid); // int - int (or any primitive)
+        //BigDecimal dollars = (BigDecimal) changeDue;
 
-        BigDecimal changeDue = salePrice.subtract(amountPaid); // int - int (or any primitive)
-        BigDecimal dollars = (BigDecimal) changeDue;
+        System.out.println("Your change is: " + numbersOfQuarters + " Quarters, " + numberOfDimes + " Dimes, & " + numberOfNickels + " Nickels");
+        //if change is grater than 0, "Your change is: amount of quarters, amount of dimes, amount of nickels "
 
-        System.out.println("Return" + dollars + "Dollars");
 
-        scanner.close();
 
     }
     public void recordTransaction(){

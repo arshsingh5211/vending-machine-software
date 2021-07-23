@@ -17,7 +17,7 @@ public class VendingMachineCLI {
 	
 	private static final String   PURCHASE_MENU_FEED_MONEY = "Feed Money";
 	private static final String   PURCHASE_MENU_SELECT_ITEM = "Select Item";
-	private static final String   PURCHASE_MENU_EXIT = "Exit to Main Menu";
+	private static final String   PURCHASE_MENU_EXIT = "Finish Transaction";
 	private static final String[] PURCHASE_MENU_OPTIONS = { PURCHASE_MENU_FEED_MONEY, PURCHASE_MENU_SELECT_ITEM, PURCHASE_MENU_EXIT };
 
 	private VendingMachine vm = new VendingMachine();
@@ -59,7 +59,9 @@ public class VendingMachineCLI {
 				vm.selectProduct();
 			}
 			else if (purchaseMenuChoice.equals(PURCHASE_MENU_EXIT)) {
-				break; // this ends the program when we want to go back to main menu. fix!
+				vm.finishTransaction();
+				menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);
+				//break; // this ends the program when we want to go back to main menu. fix!
 			}
 		}
 	}
