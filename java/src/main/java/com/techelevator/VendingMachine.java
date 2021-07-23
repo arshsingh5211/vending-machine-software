@@ -20,71 +20,63 @@ public class VendingMachine {
 
     Scanner console = new Scanner(System.in);
 
-    public Vendable[] getArrayOfVendables(){
-        //arrayOfVendables = new Vendable[SLOTS.length];
-        Chips potatoCrisps = new Chips(new BigDecimal("3.05"),"Potato Crisps");
-        Chips stackers = new Chips(new BigDecimal("1.45"), "Stackers");
-        arrayOfVendables[0] = potatoCrisps;
-        arrayOfVendables[1] = stackers;
-
-        return arrayOfVendables;
-
-    }
-
     public void displayInventory(){
-        /*String[] slots = {"A1","A2","A3","A4","B1","B2","B3","B4","C1","C2","C3","C4","D1","D2","D3","D4",};
-
-        String[] itemNames = {"Potato Crisps", "Stackers", "Grain Waves","Cloud Popcorn",
-                "Moonpie", "Cowtails", "Wonka Bar", "Crunchie","Cola", "Dr. Salt", "Mountain Melter",
-                "Heavy", "U-Chews", "Little League Chew", "Chiclets", "Triplemint"};
-
-        BigDecimal[] itemPrices = {new BigDecimal("3.05"), new BigDecimal("1.45"), new BigDecimal("2.75"),new BigDecimal("3.65"),
-                new BigDecimal("1.80"),new BigDecimal("1.50"),new BigDecimal("1.50"),new BigDecimal("1.75"),
-                new BigDecimal("1.25"),new BigDecimal("1.50"),new BigDecimal("1.50"),new BigDecimal("1.50"),
-                new BigDecimal("0.85"), new BigDecimal(".95"), new BigDecimal("0.75"),new BigDecimal("0.75")};
-  */
+    	Vendable[] vendableArr = getArrayOfVendables();
         int itemQuantity = 5;
-
-        try {
-            for (int i = 0; i < getArrayOfVendables().length; i++) {
-
-                System.out.println(SLOTS[i] + ": " + getArrayOfVendables()[i].getName() + ": " + getArrayOfVendables()[i].getPrice() + ": ");
-
-                //itemQuantity[i] = 5;
-                //System.out.println(SLOTS[i] + ": " + itemNames[i] + ": " + NumberFormat.getCurrencyInstance().format(itemPrices[i]) + ": " + itemQuantity[i]);
-            }
-        } catch (Exception e) {
-            System.out.println("Array is null");
-            e.printStackTrace();
+        System.out.println("\nWelcome to Vendo-Matic 800!\n\n");
+        for (int i = 0; i < vendableArr.length; i++) {
+        	System.out.println(SLOTS[i] + ": " + vendableArr[i].getName() + ": " + 
+        			NumberFormat.getCurrencyInstance().format(vendableArr[i].getPrice()) + ": ");
         }
     }
 
     public void feedMoney(){
+        String amountToDeposit = "";
+    	BigDecimal[] feedMoneyOptions = new BigDecimal[] {new BigDecimal("1.00"), new BigDecimal("5.00"), new BigDecimal("10.00"), new BigDecimal("20.00")};
+    	boolean run = true;
+    	while (run) {
+			System.out.println("\n1. $1\t\t\t\t2. $5");
+			System.out.println("3. $10\t\t\t\t4. $20 ");
+			System.out.print("\nPlease select the number corresponding to your choice: ");
 
-        try{
-            String amountToDeposit = "";
-            boolean run = true;
-
-            while (run) {
-                System.out.println("1) $1   2) $5");
-                System.out.println("3) $10  4) $20");
-                System.out.print("Please select the number (1-4) of the amount you would like to deposit: ");
-
-                int selection = console.nextInt();
-
-                if (selection > 0 && selection < 5) {
-                    run = false;
-                } else {
-                    System.out.println("Sorry, invalid selection. Please enter a selection (1-4) that corresponds to amount to deposit");
-                }
-            }
-        }catch (InputMismatchException e) {
-            System.out.println("Sorry, invalid selection. PROGRAM TERMINATED");
+			int selection = console.nextInt();
+			if (selection > 0 && selection < 5) {
+				balance = balance.add(feedMoneyOptions[selection - 1]);
+				run = false;
+				// should we add a check here to make sure user meant to do this -- "Are you sure you want to ...Y/N"
+				System.out.println("Thanks! Your new balance is " + NumberFormat.getCurrencyInstance().format(balance) + ".");
+			} 
+			else System.err.print("Sorry, invalid selection! Please enter a selection (1-4) that corresponds to amount to deposit"); 
         }
     }
+    
+    
     public void selectProduct(){
-
+        // need print statement of all slots and their vendable items
+        for (int i = 0; i < getArrayOfVendables().length; i++) {
+            System.out.println(" [" + SLOTS[i] + "] " + getArrayOfVendables()[i].getName() + " (" + NumberFormat.getCurrencyInstance().format(getArrayOfVendables()[i].getPrice()) + ")");
+        }
+        boolean run = true;
+        while (run) {
+            System.out.print("Please enter option corresponding to your product selection: ");
+            int selection = console.nextInt();
+            if (selection > 0 && selection < 17) {
+                BigDecimal selectionPrice = getArrayOfVendables()[selection-1].getPrice();
+                if (balance.compareTo(selectionPrice) < 0) {
+                    System.out.println("Current balance is less than item price! Please feed money and try again."); // can tell them how much more money they need -- do later
+                }
+                else {
+                    balance = balance.subtract(selectionPrice);
+                    System.out.println("\nThanks! Your new balance is " + NumberFormat.getCurrencyInstance().format(balance) + ".");
+                    run = false;
+                }
+                // we need to add a check somewhere to make sure balance is never below $0
+                // rn it lets you keep buying stuff even if your balance would fall below 0 after purchase
+            }
+            else System.err.print("Sorry, invalid selection! Please enter a selection (1-16) that corresponds to a product.");
+        }
     }
+
     public void finishTransaction() {
         //calculate change
         //reset balance to $0
@@ -115,7 +107,68 @@ public class VendingMachine {
         }
     }
 
-    public BigDecimal getBalance() {
+    public String[] getItemNames() {
+		return itemNames;
+	}
+
+	public void setItemNames(String[] itemNames) {
+		this.itemNames = itemNames;
+	}
+
+	public BigDecimal[] getItemPrices() {
+		return itemPrices;
+	}
+
+	public void setItemPrices(BigDecimal[] itemPrices) {
+		this.itemPrices = itemPrices;
+	}
+
+	public int[] getItemQuantity() {
+		return itemQuantity;
+	}
+
+	public void setItemQuantity(int[] itemQuantity) {
+		this.itemQuantity = itemQuantity;
+	}
+
+	public Scanner getConsole() {
+		return console;
+	}
+
+	public String[] getSLOTS() {
+		return SLOTS;
+	}
+	
+	public Vendable[] getArrayOfVendables(){
+        Chips potatoCrisps = new Chips(new BigDecimal("3.05"),"Potato Crisps");
+        Chips stackers = new Chips(new BigDecimal("1.45"), "Stackers");
+        arrayOfVendables[0] = potatoCrisps;
+        arrayOfVendables[1] = stackers;
+        arrayOfVendables[2] = potatoCrisps;
+        arrayOfVendables[3] = stackers;
+        arrayOfVendables[4] = potatoCrisps;
+        arrayOfVendables[5] = stackers;
+        arrayOfVendables[6] = potatoCrisps;
+        arrayOfVendables[7] = stackers;
+        arrayOfVendables[8] = potatoCrisps;
+        arrayOfVendables[9] = stackers;
+        arrayOfVendables[10] = potatoCrisps;
+        arrayOfVendables[11] = stackers;
+        arrayOfVendables[12] = potatoCrisps;
+        arrayOfVendables[13] = stackers;
+        arrayOfVendables[14] = potatoCrisps;
+        arrayOfVendables[15] = stackers;
+        
+
+        return arrayOfVendables;
+
+    }
+
+	public void setArrayOfVendables(Vendable[] arrayOfVendables) {
+		this.arrayOfVendables = arrayOfVendables;
+	}
+
+	public BigDecimal getBalance() {
         return balance;
     }
 
