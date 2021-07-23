@@ -38,6 +38,7 @@ public class VendingMachineCLI {
 					
 					if (purchaseMenuChoice.equals(PURCHASE_MENU_FEED_MONEY)) {
 						vm.feedMoney();
+						menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS); // we want to take user back to purchase menu once they add money
 					}
 					else if (purchaseMenuChoice.equals(PURCHASE_MENU_SELECT_ITEM)) {
 						vm.selectProduct();

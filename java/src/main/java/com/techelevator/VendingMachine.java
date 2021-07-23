@@ -37,6 +37,7 @@ public class VendingMachine {
 			if (selection > 0 && selection < 5) {
 				balance = balance.add(feedMoneyOptions[selection - 1]);
 				run = false;
+				// should we add a check here to make sure user meant to do this -- "Are you sure you want to ...Y/N"
 				System.out.println("Thanks! Your new balance is " + NumberFormat.getCurrencyInstance().format(balance) + ".");
 			} 
 			else System.err.print("Sorry, invalid selection! Please enter a selection (1-4) that corresponds to amount to deposit"); 
@@ -45,7 +46,29 @@ public class VendingMachine {
     
     
     public void selectProduct(){
-
+        // need print statement of all slots and their vendable items
+        for (int i = 0; i < getArrayOfVendables().length; i++) {
+            System.out.println(" [" + SLOTS[i] + "] " + getArrayOfVendables()[i].getName() + " (" + NumberFormat.getCurrencyInstance().format(getArrayOfVendables()[i].getPrice()) + ")");
+        }
+        boolean run = true;
+        while (run) {
+            System.out.print("Please enter option corresponding to your product selection: ");
+            int selection = console.nextInt();
+            if (selection > 0 && selection < 17) {
+                BigDecimal selectionPrice = getArrayOfVendables()[selection-1].getPrice();
+                if (balance.compareTo(selectionPrice) < 0) {
+                    System.out.println("Current balance is less than item price! Please feed money and try again."); // can tell them how much more money they need -- do later
+                }
+                else {
+                    balance = balance.subtract(selectionPrice);
+                    System.out.println("\nThanks! Your new balance is " + NumberFormat.getCurrencyInstance().format(balance) + ".");
+                    run = false;
+                }
+                // we need to add a check somewhere to make sure balance is never below $0
+                // rn it lets you keep buying stuff even if your balance would fall below 0 after purchase
+            }
+            else System.err.print("Sorry, invalid selection! Please enter a selection (1-16) that corresponds to a product.");
+        }
     }
     public void finishTransaction(){
 
