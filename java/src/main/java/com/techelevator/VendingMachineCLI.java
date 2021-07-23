@@ -39,12 +39,13 @@ public class VendingMachineCLI {
 					if (purchaseMenuChoice.equals(PURCHASE_MENU_FEED_MONEY)) {
 						vm.feedMoney();
 						menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS); // we want to take user back to purchase menu once they add money
+						// this won't let user choose something from purchase menu, no matter what you input takes you back to main menu. fix???
 					}
 					else if (purchaseMenuChoice.equals(PURCHASE_MENU_SELECT_ITEM)) {
 						vm.selectProduct();
 					}
 					else if (purchaseMenuChoice.equals(PURCHASE_MENU_EXIT)) {
-						break;
+						break; // this ends the program when we want to go back to main menu. fix!
 					}
 			} 
 			else if (choice.equals(MAIN_MENU_OPTION_EXIT)) {
