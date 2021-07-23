@@ -132,7 +132,7 @@ public class VendingMachine {
                 DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
                 LocalDateTime currentDateTime = LocalDateTime.now();
                 String dateTimeFormatted = currentDateTime.format(dateFormat);
-                //pw.println(dateTimeFormatted + Transaction type? + mystery$amounts;
+                //pw.println(dateTimeFormatted + Transaction type? + starting and ending balance after transaction activity);
             }
         catch(Exception ex){
             System.out.println(ex);
