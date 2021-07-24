@@ -23,11 +23,8 @@ public class VendingMachine {
 
     Scanner console = new Scanner(System.in);
 
-    // add quantity remaining!!
     //need to let user select slots instead of numbers
     //need to update transactionLog report for select product and giveChange
-    //track quantity throughout class
-    //press 3 in main menu to terminate program
 
     public VendingMachine () {
         itemQuantityArr = new int[SLOTS.length];
