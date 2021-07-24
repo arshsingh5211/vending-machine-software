@@ -16,8 +16,8 @@ public class VendingMachine {
     private final String[] SLOTS = {"A1","A2","A3","A4","B1","B2","B3","B4","C1","C2","C3","C4","D1","D2","D3","D4"};
     private String[] itemNames;
     private BigDecimal[] itemPrices;
-    private int itemQuantity;
-    private Vendable[] arrayOfVendables;
+    private int[] itemQuantityArr;
+    private Vendable[] vendableArr;
     private File transactionLog = new File("log.txt");
     private BigDecimal previousBalance;
 
@@ -29,10 +29,32 @@ public class VendingMachine {
     //track quantity throughout class
     //press 3 in main menu to terminate program
 
-    public void stockInventory() {
-        for (Vendable item : getArrayOfVendables()) {
-
+    public VendingMachine () {
+        itemQuantityArr = new int[SLOTS.length];
+        for (int i = 0; i < itemQuantityArr.length; i++) {
+            itemQuantityArr[i] = 5;
         }
+
+
+        Chips a1 = new Chips(new BigDecimal("3.05"), "Potato Crisps");
+        Chips a2 = new Chips(new BigDecimal("1.45"), "Stackers");
+        Chips a3 = new Chips(new BigDecimal("2.75"), "Grain Waves");
+        Chips a4 = new Chips(new BigDecimal("3.65"), "Cloud Popcorn");
+        Candy b1 = new Candy(new BigDecimal("1.80"), "Moonpie");
+        Candy b2 = new Candy(new BigDecimal("1.50"), "Cowtales");
+        Candy b3 = new Candy(new BigDecimal("1.50"), "Wonka Bar");
+        Candy b4 = new Candy(new BigDecimal("1.75"), "Crunchie");
+        Beverages c1 = new Beverages(new BigDecimal("1.25"), "Cola");
+        Beverages c2 = new Beverages(new BigDecimal("1.50"), "Dr. Salt");
+        Beverages c3 = new Beverages(new BigDecimal("1.50"), "Mountain Melter");
+        Beverages c4 = new Beverages(new BigDecimal("1.50"), "Heavy");
+        Gum d1 = new Gum(new BigDecimal("0.85"), "U-Chews");
+        Gum d2 = new Gum(new BigDecimal("0.95"), "Little League Chew");
+        Gum d3 = new Gum(new BigDecimal("0.75"), "Chiclets");
+        Gum d4 = new Gum(new BigDecimal("0.75"), "Triplemint");
+
+
+        vendableArr = new Vendable[]{a1, a2, a3, a4, b1, b2, b3, b4, c1, c2, c3, c4, d1, d2, d3, d4};
     }
 
     // stack of numbers 1 -5
@@ -41,12 +63,12 @@ public class VendingMachine {
 
 
     public void displayInventory(){
-    	Vendable[] vendableArr = getArrayOfVendables();
         int itemQuantity = 5;
         System.out.println("\nWelcome to Vendo-Matic 800!\n\n");
         for (int i = 0; i < vendableArr.length; i++) {
+            String quantityUpdate = itemQuantityArr[i] > 0 ? Integer.toString(itemQuantityArr[i]) : "SOLD OUT!!";
         	System.out.println(SLOTS[i] + ": " + vendableArr[i].getName() + ": " + 
-        			NumberFormat.getCurrencyInstance().format(vendableArr[i].getPrice()) + ": "); // ADD QUANTITY REMAINING
+        			NumberFormat.getCurrencyInstance().format(vendableArr[i].getPrice()) + ": " + quantityUpdate); // ADD QUANTITY REMAINING
         }
     }
 
@@ -75,10 +97,9 @@ public class VendingMachine {
     
     
     public void selectProduct(){
-        Vendable[] vendableArr = getArrayOfVendables();
         // need print statement of all slots and their vendable items
-        for (int i = 0; i < arrayOfVendables.length; i++) {
-            System.out.println(" [" + SLOTS[i] + "] " + arrayOfVendables[i].getName() + " (" + NumberFormat.getCurrencyInstance().format(getArrayOfVendables()[i].getPrice()) + ")");
+        for (int i = 0; i < vendableArr.length; i++) {
+            System.out.println(" [" + SLOTS[i] + "] " + vendableArr[i].getName() + " (" + NumberFormat.getCurrencyInstance().format(vendableArr[i].getPrice()) + ")");
             // add quantity remaining!!
             //need to let user select slots instead of numbers
 
@@ -88,13 +109,25 @@ public class VendingMachine {
             System.out.print("Please enter option corresponding to your product selection: ");
             int selection = console.nextInt();
             if (selection > 0 && selection < 17) {
-                BigDecimal selectionPrice = getArrayOfVendables()[selection-1].getPrice();
+                BigDecimal selectionPrice = vendableArr[selection-1].getPrice();
                 if (balance.compareTo(selectionPrice) < 0) {
                     System.out.println("Current balance is less than item price! Please feed money and try again."); // can tell them how much more money they need -- do later
+                    // ASK USER IF THEY WANT TO EXIT OR FEED MORE MONEY
                 }
+                else if (itemQuantityArr[selection-1] == 0) {
+                    System.out.print("Sorry, item is sold out!\n1) Choose another item\n2) Go back to purchase menu.\nPlease choose an option >>> ");
+                    int choice = console.nextInt();
+                    if (choice == 2) {
+                        // go back to purchase menu
+                    }
+                }
+
+                // Sorr
+
                 else {
+                    itemQuantityArr[selection-1] = itemQuantityArr[selection-1] - 1;
                     balance = balance.subtract(selectionPrice);
-                    System.out.println("\nThanks! Your new balance is " + NumberFormat.getCurrencyInstance().format(balance) + ".");
+                    System.out.println("\n" + vendableArr[selection-1].getSound() + " Your new balance is " + NumberFormat.getCurrencyInstance().format(balance) + ".");
                     run = false;
                 }
                 // we need to add a check somewhere to make sure balance is never below $0
@@ -112,6 +145,12 @@ public class VendingMachine {
         //reset balance to $0
         System.out.println("\nYour transaction is now complete. You may now collect your change.\n");
         this.getChange();
+
+        for (int i = 0; i < itemQuantityArr.length; i++) {
+            itemQuantityArr[i] = 5;
+        }
+        balance = new BigDecimal("0.00");
+
 
         // make sure everything is restocked to 5
         //return to main menu --> return to run somehow?
@@ -203,12 +242,12 @@ public class VendingMachine {
 		this.itemPrices = itemPrices;
 	}
 
-	public int getItemQuantity() {
-		return itemQuantity;
+	public int[] getItemQuantityArr() {
+		return itemQuantityArr;
 	}
 
-	public void setItemQuantity(int itemQuantity) {
-		this.itemQuantity = itemQuantity;
+	public void setItemQuantityArr(int[] itemQuantityArr) {
+		this.itemQuantityArr = itemQuantityArr;
 	}
 
 	public Scanner getConsole() {
@@ -219,25 +258,12 @@ public class VendingMachine {
 		return SLOTS;
 	}
 	
-	public Vendable[] getArrayOfVendables(){
-        // Chips varName = new Chips();
-        arrayOfVendables = new Vendable[]{new Chips(new BigDecimal("3.05"), "Potato Crisps"), new Chips(new BigDecimal("1.45"), "Stackers"),
-                new Chips(new BigDecimal("2.75"), "Grain Waves"), new Chips(new BigDecimal("3.65"), "Cloud Popcorn"),
-                new Candy(new BigDecimal("1.80"), "Moonpie"), new Candy(new BigDecimal("1.50"), "Cowtales"),
-                new Candy(new BigDecimal("1.50"), "Wonka Bar"), new Candy(new BigDecimal("1.75"), "Crunchie"),
-                new Beverages(new BigDecimal("1.25"), "Cola"), new Beverages(new BigDecimal("1.50"), "Dr. Salt"),
-                new Beverages(new BigDecimal("1.50"), "Mountain Melter"), new Beverages(new BigDecimal("1.50"), "Heavy"),
-                new Gum(new BigDecimal("0.85"), "U-Chews"), new Gum(new BigDecimal("0.95"), "Little League Chew"),
-                new Gum(new BigDecimal("0.75"), "Chiclets"), new Gum(new BigDecimal("0.75"), "Triplemint")
-        };
-        
-
-        return arrayOfVendables;
-
+	public Vendable[] getVendableArr(){
+        return vendableArr;
     }
 
-	public void setArrayOfVendables(Vendable[] arrayOfVendables) {
-		this.arrayOfVendables = arrayOfVendables;
+	public void setVendableArr(Vendable[] arrayOfVendables) {
+		this.vendableArr = arrayOfVendables;
 	}
 
 	public BigDecimal getBalance() {
