@@ -23,8 +23,8 @@ public class VendingMachine {
 
     Scanner console = new Scanner(System.in);
 
-    //need to let user select slots instead of numbers
-    //need to update transactionLog report for select product and giveChange
+    // fix the select product showing twice thing
+    // fix formatting throughout the class
 
     public VendingMachine () {
         itemQuantityArr = new int[SLOTS.length];
@@ -88,12 +88,13 @@ public class VendingMachine {
 			} 
 			else System.err.print("Sorry, invalid selection! Please enter a selection (1-4) that corresponds to amount to deposit"); 
         }
-    	logTransaction(previousBalance);
+    	logTransaction(previousBalance, "Feed Money");
 
     }
     
     
     public void selectProduct(){
+        BigDecimal previousBalance = balance;
         // need print statement of all slots and their vendable items
         for (int i = 0; i < vendableArr.length; i++) {
            System.out.println(" [" + SLOTS[i] + "] " + vendableArr[i].getName() + " (" + NumberFormat.getCurrencyInstance().format(vendableArr[i].getPrice()) + ")");
@@ -117,6 +118,7 @@ public class VendingMachine {
                         balance = balance.subtract(vendableArr[i].getPrice());
                         System.out.println(vendableArr[i].getName() + " Price: " + NumberFormat.getCurrencyInstance().format(vendableArr[i].getPrice()) + " Remaining balance: " + NumberFormat.getCurrencyInstance().format(balance) + " : " +vendableArr[i].getSound());
                         itemQuantityArr[i]--;
+                        logTransaction(previousBalance, vendableArr[i].getName() + " " + SLOTS[i]);
                     }
                 } run = false;
             }
@@ -144,13 +146,13 @@ public class VendingMachine {
         }
 
     public void finishTransaction() {
+        BigDecimal previousBalance = balance;
         //calculate change
         //reset balance to $0
         System.out.println("\nYour transaction is now complete. You may now collect your change.\n");
         this.getChange();
-
         balance = new BigDecimal("0.00");
-
+        logTransaction(previousBalance, "GIVE CHANGE");
 
         // make sure everything is restocked to 5
         //return to main menu --> return to run somehow?
@@ -158,7 +160,9 @@ public class VendingMachine {
     }
 
     public void getChange(){
-        int changeInPennies = balance.intValue()*100;
+        //BigDecimal previousBalance = balance;
+        BigDecimal changeInPenniesBD = balance.multiply(new BigDecimal("100"));
+        int changeInPennies = changeInPenniesBD.intValue();
         int numbersOfQuarters = 0;
         int numberOfDimes = 0;
         int numberOfNickels = 0;
@@ -169,18 +173,12 @@ public class VendingMachine {
             numberOfDimes = changeInPennies / 10;
             changeInPennies = changeInPennies % 10;
             numberOfNickels = changeInPennies / 5;
+            changeInPennies = changeInPennies % 5;
         }
-        /*
-        get change using the smallest amount of coins possible
-         */
-
-
-        //BigDecimal changeDue = salePrice.subtract(amountPaid); // int - int (or any primitive)
-        //BigDecimal dollars = (BigDecimal) changeDue;
 
         System.out.println("Your change is: " + numbersOfQuarters + " Quarters, " + numberOfDimes + " Dimes, & " + numberOfNickels + " Nickels");
-        //if change is grater than 0, "Your change is: amount of quarters, amount of dimes, amount of nickels "
 
+        //logTransaction(previousBalance, "GIVE CHANGE");
 
 
     }
@@ -206,7 +204,7 @@ public class VendingMachine {
          */
     }
 
-    public void logTransaction(BigDecimal previousBalance){
+    public void logTransaction(BigDecimal previousBalance, String actionItem){
         createLogFile();
         try (FileWriter fileWriter = new FileWriter(transactionLog,true);
                 PrintWriter pw = new PrintWriter(fileWriter)) { // try with resources
@@ -216,7 +214,7 @@ public class VendingMachine {
                 DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
                 LocalDateTime currentDateTime = LocalDateTime.now();
                 String dateTimeFormatted = currentDateTime.format(dateFormat);
-                pw.println(dateTimeFormatted + "Feed Money: " + NumberFormat.getCurrencyInstance().format(previousBalance)
+                pw.println(dateTimeFormatted + " " + actionItem + NumberFormat.getCurrencyInstance().format(previousBalance)
                         + " " + NumberFormat.getCurrencyInstance().format(balance));
 
 
