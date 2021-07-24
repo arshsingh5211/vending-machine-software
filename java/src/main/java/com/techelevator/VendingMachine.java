@@ -96,7 +96,7 @@ public class VendingMachine {
     public void selectProduct(){
         // need print statement of all slots and their vendable items
         for (int i = 0; i < vendableArr.length; i++) {
-            System.out.println(" [" + SLOTS[i] + "] " + vendableArr[i].getName() + " (" + NumberFormat.getCurrencyInstance().format(vendableArr[i].getPrice()) + ")");
+           System.out.println(" [" + SLOTS[i] + "] " + vendableArr[i].getName() + " (" + NumberFormat.getCurrencyInstance().format(vendableArr[i].getPrice()) + ")");
             // add quantity remaining!!
             //need to let user select slots instead of numbers
 
@@ -115,7 +115,7 @@ public class VendingMachine {
                         System.out.println("Item selected is Sold Out");
                     } else {
                         balance = balance.subtract(vendableArr[i].getPrice());
-                        System.out.println(vendableArr[i].getName() + " Price: " + NumberFormat.getCurrencyInstance().format(vendableArr[i].getPrice()) + " Remaining balance: " + NumberFormat.getCurrencyInstance().format(balance) + ": " +vendableArr[i].getSound());
+                        System.out.println(vendableArr[i].getName() + " Price: " + NumberFormat.getCurrencyInstance().format(vendableArr[i].getPrice()) + " Remaining balance: " + NumberFormat.getCurrencyInstance().format(balance) + " : " +vendableArr[i].getSound());
                         itemQuantityArr[i]--;
                     }
                 } run = false;
