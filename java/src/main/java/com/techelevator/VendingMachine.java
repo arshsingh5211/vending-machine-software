@@ -101,38 +101,47 @@ public class VendingMachine {
             //need to let user select slots instead of numbers
 
         }
+
         boolean run = true;
-        while (run) {
+        while(run) {
             System.out.print("Please enter option corresponding to your product selection: ");
-            int selection = console.nextInt();
-            if (selection > 0 && selection < 17) {
-                BigDecimal selectionPrice = vendableArr[selection-1].getPrice();
-                if (balance.compareTo(selectionPrice) < 0) {
-                    System.out.println("Current balance is less than item price! Please feed money and try again."); // can tell them how much more money they need -- do later
-                    run = false;
-                }
-                else if (itemQuantityArr[selection-1] == 0) {
-                    System.out.print("Sorry, item is sold out!");
-                    run = false;
-                }
+            String selection = console.nextLine().toUpperCase().trim();
 
-                // Sorr
-
-                else {
-                    itemQuantityArr[selection-1] = itemQuantityArr[selection-1] - 1;
-                    balance = balance.subtract(selectionPrice);
-                    System.out.println("\n" + vendableArr[selection-1].getSound() + " Your new balance is " + NumberFormat.getCurrencyInstance().format(balance) + ".");
-                    run = false;
-                }
-                // we need to add a check somewhere to make sure balance is never below $0
-                // rn it lets you keep buying stuff even if your balance would fall below 0 after purchase
+            for (int i = 0; i < SLOTS.length; i++) {
+                if (SLOTS[i].equals(selection)) {
+                    if (balance.compareTo(vendableArr[i].getPrice()) == -1) {
+                        System.out.println("Sorry, current balance insufficient");
+                    } else if (itemQuantityArr[i] == 0) {
+                        System.out.println("Item selected is Sold Out");
+                    } else {
+                        balance = balance.subtract(vendableArr[i].getPrice());
+                        System.out.println(vendableArr[i].getName() + " Price: " + NumberFormat.getCurrencyInstance().format(vendableArr[i].getPrice()) + " Remaining balance: " + NumberFormat.getCurrencyInstance().format(balance) + ": " +vendableArr[i].getSound());
+                        itemQuantityArr[i]--;
+                    }
+                } run = false;
             }
-            // if there entry is beyond array length then one error message to try again, if it's not enough money take back to purchase menu
-            // loop back to previous menu
-            else System.err.print("Sorry, invalid selection! Please feed more money or choose a different item.");
-            // ******Needs to go back to purchase menu instead of asking for a selection again.************
         }
-    }
+
+
+
+
+
+
+            //use selection to find item in slots[]
+            //run a for loop to find an index in slots[]
+            //use index to find item in vendableArr
+            //if valid product is chosen >
+            //print item name, cost, and money remaining along with sound message
+            //after product dispensed, vm updates its balance and returns to purchase menu
+
+
+
+            //validate that selection is valid
+            //if not, send message telling user invalid selection and return to purchase menu run=false;
+            //if product sold out , user informed and return to purchase menu
+
+
+        }
 
     public void finishTransaction() {
         //calculate change
