@@ -112,14 +112,11 @@ public class VendingMachine {
                 BigDecimal selectionPrice = vendableArr[selection-1].getPrice();
                 if (balance.compareTo(selectionPrice) < 0) {
                     System.out.println("Current balance is less than item price! Please feed money and try again."); // can tell them how much more money they need -- do later
-                    // ASK USER IF THEY WANT TO EXIT OR FEED MORE MONEY
+                    run = false;
                 }
                 else if (itemQuantityArr[selection-1] == 0) {
-                    System.out.print("Sorry, item is sold out!\n1) Choose another item\n2) Go back to purchase menu.\nPlease choose an option >>> ");
-                    int choice = console.nextInt();
-                    if (choice == 2) {
-                        // go back to purchase menu
-                    }
+                    System.out.print("Sorry, item is sold out!");
+                    run = false;
                 }
 
                 // Sorr
@@ -146,9 +143,6 @@ public class VendingMachine {
         System.out.println("\nYour transaction is now complete. You may now collect your change.\n");
         this.getChange();
 
-        for (int i = 0; i < itemQuantityArr.length; i++) {
-            itemQuantityArr[i] = 5;
-        }
         balance = new BigDecimal("0.00");
 
 

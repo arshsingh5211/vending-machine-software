@@ -40,7 +40,11 @@ public class VendingMachineCLI {
 			} 
 			else if (choice.equals(MAIN_MENU_OPTION_EXIT)) { // exits system not exits to main menu as README asked
 		        System.out.println("\nThank you for using Vendo-Matic 800! Have a nice day.");
-				break;
+				for (int i = 0; i < vm.getItemQuantityArr().length; i++) {
+					vm.getItemQuantityArr()[i] = 5;
+				}
+				System.exit(0);
+		        //break;
 			}
 		}
 	}
@@ -52,15 +56,14 @@ public class VendingMachineCLI {
 
 			if (purchaseMenuChoice.equals(PURCHASE_MENU_FEED_MONEY)) {
 				vm.feedMoney();
-				menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS); // we want to take user back to purchase menu once they add money
-				// this won't let user choose something from purchase menu, no matter what you input takes you back to main menu. fix???
+				continue; //menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS); // first run doesn't let us choose anything, just displays
 			}
 			else if (purchaseMenuChoice.equals(PURCHASE_MENU_SELECT_ITEM)) {
 				vm.selectProduct();
 			}
 			else if (purchaseMenuChoice.equals(PURCHASE_MENU_EXIT)) {
 				vm.finishTransaction();
-				menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);
+				break;//menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);
 				//break; // this ends the program when we want to go back to main menu. fix!
 			}
 		}
