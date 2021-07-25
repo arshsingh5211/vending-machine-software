@@ -22,23 +22,10 @@ public class VendingMachine {
     private Scanner console = new Scanner(System.in);
 
 
-
-    // how do we close the scanner?
-    // add a check to only print to transaction log for GIVE CHANGE if change is > 0
-    // fix the select product showing twice thing
-    // fix formatting throughout the class
-    // stocked via an input file -- READ FROM FILE NOT INCLUDE IN CONSTRUCTOR!!
     // Feed Money on log should be $5.00 $5.00 (example) like in README not $0 $5
     // add a check/verify user wants to deposit that amount of money
     // add "Current Money Provided: [balance]" per README
-    // should we change feed money options to 1, 2, 5, 10 -- is $20 too high?
-    // "After completing their purchase, the user is returned to the "Main" menu to continue using the vending machine."
-        // ^^^ right now it sends them back to Purchase Menu not Main Menu
     // **SELECTPRODUCT() BUG ONLY HAPPENS WHEN YOU FEED MONEY FIRST THEN TRY TO SELECT -- otherwise works fine
-    // Do we need "Your transaction is now complete. You may now collect your change." in finish transaction?
-    // selectProduct() -- there is a way to use regex to ensure user only enters [A-D || a-d] && [1-4] but I have to figure out how
-                // that way we wouldn't need to loop through array
-                // wait nvm we would still have to find index anyways, so loop is inevitable
 
     public VendingMachine () {
         this.stockInventory();
@@ -85,11 +72,11 @@ public class VendingMachine {
 
     public void feedMoney(){
         previousBalance = balance;
-    	BigDecimal[] feedMoneyOptions = new BigDecimal[] {new BigDecimal("1.00"), new BigDecimal("5.00"), new BigDecimal("10.00"), new BigDecimal("20.00")};
+    	BigDecimal[] feedMoneyOptions = new BigDecimal[] {new BigDecimal("1.00"), new BigDecimal("2.00"), new BigDecimal("5.00"), new BigDecimal("10.00")};
     	boolean run = true;
     	while (run) {
-			System.out.println("\n1. $1\t\t\t\t2. $5");
-			System.out.println("3. $10\t\t\t\t4. $20 ");
+			System.out.println("\n1. $1\t\t\t\t2. $2");
+			System.out.println("3. $5\t\t\t\t4. $10 ");
 			System.out.print("\nPlease choose an option >>> ");
 
 			int selection = console.nextInt();
@@ -103,8 +90,8 @@ public class VendingMachine {
         }
     	logTransaction(previousBalance, "FEED MONEY");
     }
-    
-    
+
+
     public void selectProduct(){
         BigDecimal previousBalance = balance;
         System.out.println(); // just wanted to add a line separator before list is shown
@@ -113,7 +100,7 @@ public class VendingMachine {
                     NumberFormat.getCurrencyInstance().format(vendableArr[i].getPrice()) + ")");
         }
         System.out.print("\nPlease choose an option >>> ");
-        String selection = console.nextLine().toUpperCase().replaceAll("\\s", "");
+        String selection = console.nextLine().toUpperCase().replaceAll("\\s", ""); //this line might be the issue
         int indexOfItem = -1;
         for (int i = 0; i < slots.length; i++) {
             if (slots[i].equals(selection)) indexOfItem = i;
@@ -140,10 +127,14 @@ public class VendingMachine {
 
     public void finishTransaction() {
         BigDecimal previousBalance = balance;
-        System.out.println("\nYour transaction is now complete. You may now collect your change.\n");
-        this.getChange();
+        System.out.println("\nYour transaction is now complete.\n");
+
         balance = new BigDecimal("0.00");
-        logTransaction(previousBalance, "GIVE CHANGE");
+        if (previousBalance.compareTo(new BigDecimal("0.00"))!=0){
+            this.getChange();
+            logTransaction(previousBalance, "GIVE CHANGE");
+        }
+
     }
 
     public void getChange(){
@@ -190,7 +181,7 @@ public class VendingMachine {
 	public String[] getSlots() {
 		return slots;
 	}
-	
+
 	public Vendable[] getVendableArr(){
         return vendableArr;
     }
