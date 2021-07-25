@@ -23,9 +23,7 @@ public class VendingMachine {
 
 
     // Feed Money on log should be $5.00 $5.00 (example) like in README not $0 $5
-    // add a check/verify user wants to deposit that amount of money
     // add "Current Money Provided: [balance]" per README
-    // **SELECTPRODUCT() BUG ONLY HAPPENS WHEN YOU FEED MONEY FIRST THEN TRY TO SELECT -- otherwise works fine
 
     public VendingMachine () {
         this.stockInventory();
@@ -58,12 +56,13 @@ public class VendingMachine {
     }
 
     public void displayInventory(){
-        System.out.println("\nWelcome to Vendo-Matic 800!\n\n");
         for (int i = 0; i < vendableArr.length; i++) {
             String quantityUpdate = itemQuantityArr[i] > 0 ? Integer.toString(itemQuantityArr[i]) : "SOLD OUT!!";
         	System.out.println("[" + slots[i] + "] " + vendableArr[i].getName() + ": " +
         			NumberFormat.getCurrencyInstance().format(vendableArr[i].getPrice()) + " (Qty: " + quantityUpdate + ")");
         }
+        System.out.println("\nPlease press [enter] to go back to Main Menu:");
+        console.nextLine();  //make the user hit ENTER before continuing
     }
 
     // When the customer selects "(1) Display Vending Machine Items",
@@ -81,14 +80,22 @@ public class VendingMachine {
 
 			int selection = console.nextInt();
 			if (selection > 0 && selection < 5) {
-				balance = balance.add(feedMoneyOptions[selection - 1]);
-				run = false;
-				// should we add a check here to make sure user meant to do this -- "Are you sure you want to ...Y/N"
-				System.out.println("Thanks! Your new balance is " + NumberFormat.getCurrencyInstance().format(balance) + ".");
-			}
+                System.out.print("Are you sure you want to feed " +
+                        NumberFormat.getCurrencyInstance().format(feedMoneyOptions[selection - 1]) +
+                        " to the Vending Machine? Y/N ");
+                String verifyChoice = console.next();
+                if (!verifyChoice.equalsIgnoreCase("y") || verifyChoice.equalsIgnoreCase("yes")) {
+                    System.out.println("No worries! Balance is still " + NumberFormat.getCurrencyInstance().format(balance) + ".");
+                }
+                else {
+                    balance = balance.add(feedMoneyOptions[selection - 1]);
+                    System.out.println("Thanks! Your new balance is " + NumberFormat.getCurrencyInstance().format(balance) + ".");
+                    logTransaction(previousBalance, "FEED MONEY");
+                }
+                run = false;
+            }
 			else System.err.println("\nSorry, invalid selection! Please enter a selection (1-4) that corresponds to amount to deposit. ");
         }
-    	logTransaction(previousBalance, "FEED MONEY");
     }
 
 
@@ -128,13 +135,14 @@ public class VendingMachine {
 
     public void finishTransaction() {
         BigDecimal previousBalance = balance;
-        System.out.println("\nYour transaction is now complete.\n");
+        System.out.println("\nYour transaction is now complete.");
 
         if (previousBalance.compareTo(new BigDecimal("0.00"))!=0){
             this.getChange();
             balance = new BigDecimal("0.00");
             logTransaction(previousBalance, "GIVE CHANGE");
         }
+        else System.out.println("Balance is zero -- no change required!");
 
     }
 

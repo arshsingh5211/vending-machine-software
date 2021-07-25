@@ -57,11 +57,9 @@ public class VendingMachineCLI {
 
 			if (purchaseMenuChoice.equals(PURCHASE_MENU_FEED_MONEY)) {
 				vm.feedMoney();
-				//continue; //menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS); // first run doesn't let us choose anything, just displays
 			}
 			else if (purchaseMenuChoice.equals(PURCHASE_MENU_SELECT_PRODUCT)) {
 				vm.selectProduct();
-				//continue;
 			}
 			else if (purchaseMenuChoice.equals(PURCHASE_MENU_EXIT)) {
 				vm.finishTransaction();
