@@ -1,9 +1,6 @@
 package com.techelevator;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
@@ -14,7 +11,7 @@ import java.util.Scanner;
 public class VendingMachine {
     private BigDecimal balance = new BigDecimal("0.00");
     private String[] slots = new String[16];
-    private int[] itemQuantityArr = new int[16];;
+    private int[] itemQuantityArr = new int[16];
     private Vendable[] vendableArr = new Vendable[16];
     private File inputFile = new File("vendingmachine.csv");
     private File transactionLog = new File("log.txt");
@@ -37,7 +34,6 @@ public class VendingMachine {
                 String[] lineArr = line.trim().split("\\|");
                 slots[lineNum - 1] = lineArr[0];
                 BigDecimal priceBD = new BigDecimal(lineArr[2]);
-                //assigning vendable objects based on lineArr[3]
                 if (lineArr[3].equals("Chip")){
                     vendableArr[lineNum-1] = new Chips(priceBD, lineArr[1]);
                 }else if (lineArr[3].equals("Candy")){
@@ -83,8 +79,8 @@ public class VendingMachine {
                 System.out.print("Are you sure you want to feed " +
                         NumberFormat.getCurrencyInstance().format(feedMoneyOptions[selection - 1]) +
                         " to the Vending Machine? Y/N ");
-                String verifyChoice = console.next();
-                if (!verifyChoice.equalsIgnoreCase("y") || verifyChoice.equalsIgnoreCase("yes")) {
+                String verifyChoice = console.next().trim();
+                if (!verifyChoice.equalsIgnoreCase("y") && !verifyChoice.equalsIgnoreCase("yes")) {
                     System.out.println("No worries! Balance is still " + NumberFormat.getCurrencyInstance().format(balance) + ".");
                 }
                 else {
@@ -179,7 +175,7 @@ public class VendingMachine {
         }
     }
 
-	public int[] getItemQuantityArr() {
+    public int[] getItemQuantityArr() {
 		return itemQuantityArr;
 	}
 
