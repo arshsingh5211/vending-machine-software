@@ -16,9 +16,9 @@ public class VendingMachineCLI {
 	private static final String[] MAIN_MENU_OPTIONS = {MAIN_MENU_OPTION_DISPLAY_ITEMS, MAIN_MENU_OPTION_PURCHASE, MAIN_MENU_OPTION_EXIT};
 	
 	private static final String   PURCHASE_MENU_FEED_MONEY = "Feed Money";
-	private static final String   PURCHASE_MENU_SELECT_ITEM = "Select Item";
+	private static final String   PURCHASE_MENU_SELECT_PRODUCT = "Select Product";
 	private static final String   PURCHASE_MENU_EXIT = "Finish Transaction";
-	private static final String[] PURCHASE_MENU_OPTIONS = { PURCHASE_MENU_FEED_MONEY, PURCHASE_MENU_SELECT_ITEM, PURCHASE_MENU_EXIT };
+	private static final String[] PURCHASE_MENU_OPTIONS = { PURCHASE_MENU_FEED_MONEY, PURCHASE_MENU_SELECT_PRODUCT, PURCHASE_MENU_EXIT };
 
 	private VendingMachine vm = new VendingMachine();
 	private Menu menu;
@@ -40,11 +40,7 @@ public class VendingMachineCLI {
 			} 
 			else if (choice.equals(MAIN_MENU_OPTION_EXIT)) { // exits system not exits to main menu as README asked
 		        System.out.println("\nThank you for using Vendo-Matic 800! Have a nice day.");
-				for (int i = 0; i < vm.getItemQuantityArr().length; i++) {
-					vm.getItemQuantityArr()[i] = 5;
-				}
 				System.exit(0);
-		        //break;
 			}
 		}
 	}
@@ -58,14 +54,13 @@ public class VendingMachineCLI {
 				vm.feedMoney();
 				//continue; //menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS); // first run doesn't let us choose anything, just displays
 			}
-			else if (purchaseMenuChoice.equals(PURCHASE_MENU_SELECT_ITEM)) {
+			else if (purchaseMenuChoice.equals(PURCHASE_MENU_SELECT_PRODUCT)) {
 				vm.selectProduct();
 				//continue;
 			}
 			else if (purchaseMenuChoice.equals(PURCHASE_MENU_EXIT)) {
 				vm.finishTransaction();
-				break;//menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);
-				//break; // this ends the program when we want to go back to main menu. fix!
+				break;
 			}
 		}
 	}

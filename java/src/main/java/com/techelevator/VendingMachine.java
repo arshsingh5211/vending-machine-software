@@ -1,83 +1,116 @@
 package com.techelevator;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Currency;
-import java.util.InputMismatchException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class VendingMachine {
     private BigDecimal balance = new BigDecimal("0.00");
-    private final String[] SLOTS = {"A1","A2","A3","A4","B1","B2","B3","B4","C1","C2","C3","C4","D1","D2","D3","D4"};
-    private String[] itemNames;
-    private BigDecimal[] itemPrices;
-    private int[] itemQuantityArr;
-    private Vendable[] vendableArr;
+    private String[] slots = new String[16];
+    private int[] itemQuantityArr = new int[16];;
+    private Vendable[] vendableArr = new Vendable[16];
+    private File inputFile = new File("vendingmachine.csv");
     private File transactionLog = new File("log.txt");
     private BigDecimal previousBalance;
+    private Scanner console = new Scanner(System.in);
 
-    Scanner console = new Scanner(System.in);
+    /*
+    What I did:
+        1) added comments for to-do list for tomm
+        2) fixed formatting of strings, added regex for spaces when user selects slot in selectProduct()
+                --- should we do that for all user input in console?
+                --- Please choose an option >>>        3
+                --- ***        3 is not a valid option ***
+                --- regex will take out all spaces for evaluation
+        3) cleaned up code (shortened loop in selectProduct(), got rid of unused variables/methods,
+            extracted constructor in stockInventory() method, switched to switch,
+            changed itemQuantityArr using Arrays.fill(), etc)
+        4) we want to stock based on vendingmachine.csv instead of creating objects like before, so just did a
+            general fileReader thing to read from that file, see stockInventory()
 
+        STILL LEFT TO DO BELOW:
+     */
+
+
+    // how do we close the scanner?
+    // add a check to only print to transaction log for GIVE CHANGE if change is > 0
     // fix the select product showing twice thing
     // fix formatting throughout the class
+    // stocked via an input file -- READ FROM FILE NOT INCLUDE IN CONSTRUCTOR!!
+    // Feed Money on log should be $5.00 $5.00 (example) like in README not $0 $5
+    // add a check/verify user wants to deposit that amount of money
+    // add "Current Money Provided: [balance]" per README
+    // should we change feed money options to 1, 2, 5, 10 -- is $20 too high?
+    // "After completing their purchase, the user is returned to the "Main" menu to continue using the vending machine."
+        // ^^^ right now it sends them back to Purchase Menu not Main Menu
+    // **SELECTPRODUCT() BUG ONLY HAPPENS WHEN YOU FEED MONEY FIRST THEN TRY TO SELECT -- otherwise works fine
+    // Do we need "Your transaction is now complete. You may now collect your change." in finish transaction?
+    // selectProduct() -- there is a way to use regex to ensure user only enters [A-D || a-d] && [1-4] but I have to figure out how
+                // that way we wouldn't need to loop through array
+                // wait nvm we would still have to find index anyways, so loop is inevitable
 
     public VendingMachine () {
-        itemQuantityArr = new int[SLOTS.length];
-        for (int i = 0; i < itemQuantityArr.length; i++) {
-            itemQuantityArr[i] = 5;
-        }
-
-
-        Chips a1 = new Chips(new BigDecimal("3.05"), "Potato Crisps");
-        Chips a2 = new Chips(new BigDecimal("1.45"), "Stackers");
-        Chips a3 = new Chips(new BigDecimal("2.75"), "Grain Waves");
-        Chips a4 = new Chips(new BigDecimal("3.65"), "Cloud Popcorn");
-        Candy b1 = new Candy(new BigDecimal("1.80"), "Moonpie");
-        Candy b2 = new Candy(new BigDecimal("1.50"), "Cowtales");
-        Candy b3 = new Candy(new BigDecimal("1.50"), "Wonka Bar");
-        Candy b4 = new Candy(new BigDecimal("1.75"), "Crunchie");
-        Beverages c1 = new Beverages(new BigDecimal("1.25"), "Cola");
-        Beverages c2 = new Beverages(new BigDecimal("1.50"), "Dr. Salt");
-        Beverages c3 = new Beverages(new BigDecimal("1.50"), "Mountain Melter");
-        Beverages c4 = new Beverages(new BigDecimal("1.50"), "Heavy");
-        Gum d1 = new Gum(new BigDecimal("0.85"), "U-Chews");
-        Gum d2 = new Gum(new BigDecimal("0.95"), "Little League Chew");
-        Gum d3 = new Gum(new BigDecimal("0.75"), "Chiclets");
-        Gum d4 = new Gum(new BigDecimal("0.75"), "Triplemint");
-
-
-        vendableArr = new Vendable[]{a1, a2, a3, a4, b1, b2, b3, b4, c1, c2, c3, c4, d1, d2, d3, d4};
+        this.stockInventory();
     }
 
-    // stack of numbers 1 -5
-    // Stack of Vendable items, have 5 in stack, and after each purchase, take from stack
-    // stack.size() to get how many items are in the stack
-
+    public void stockInventory() {
+        try (Scanner inputScanner = new Scanner (inputFile)) {
+            int lineNum = 1;
+            while (inputScanner.hasNextLine()) {
+                String line = inputScanner.nextLine();
+                String[] lineArr = line.trim().split("\\|");
+                slots[lineNum - 1] = lineArr[0];
+                BigDecimal priceBD = new BigDecimal(lineArr[2]);
+                switch (lineArr[3]) {
+                    case "Chip":
+                        vendableArr[lineNum - 1] = new Chips(priceBD, lineArr[1]);
+                        break;
+                    case "Candy":
+                        vendableArr[lineNum - 1] = new Candy(priceBD, lineArr[1]);
+                        break;
+                    case "Beverages":
+                        vendableArr[lineNum - 1] = new Beverages(priceBD, lineArr[1]);
+                        break;
+                    default:
+                        vendableArr[lineNum - 1] = new Gum(priceBD, lineArr[1]);
+                        break;
+                }
+                lineNum++;
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        Arrays.fill(itemQuantityArr, 5);
+    }
 
     public void displayInventory(){
-        int itemQuantity = 5;
         System.out.println("\nWelcome to Vendo-Matic 800!\n\n");
         for (int i = 0; i < vendableArr.length; i++) {
             String quantityUpdate = itemQuantityArr[i] > 0 ? Integer.toString(itemQuantityArr[i]) : "SOLD OUT!!";
-        	System.out.println(SLOTS[i] + ": " + vendableArr[i].getName() + ": " + 
-        			NumberFormat.getCurrencyInstance().format(vendableArr[i].getPrice()) + ": " + quantityUpdate); // ADD QUANTITY REMAINING
+        	System.out.println("[" + slots[i] + "] " + vendableArr[i].getName() + ": " +
+        			NumberFormat.getCurrencyInstance().format(vendableArr[i].getPrice()) + " (Qty: " + quantityUpdate + ")");
         }
     }
 
+    // When the customer selects "(1) Display Vending Machine Items",
+    // they're presented with a list of all items in the vending machine with its quantity remaining:
+    // ^ per README -- so we don't need to display price here?
+
     public void feedMoney(){
         previousBalance = balance;
-        String amountToDeposit = "";
     	BigDecimal[] feedMoneyOptions = new BigDecimal[] {new BigDecimal("1.00"), new BigDecimal("5.00"), new BigDecimal("10.00"), new BigDecimal("20.00")};
     	boolean run = true;
     	while (run) {
 			System.out.println("\n1. $1\t\t\t\t2. $5");
 			System.out.println("3. $10\t\t\t\t4. $20 ");
-			System.out.print("\nPlease select the number corresponding to your choice: ");
+			System.out.print("\nPlease choose an option >>> ");
 
 			int selection = console.nextInt();
 			if (selection > 0 && selection < 5) {
@@ -86,81 +119,54 @@ public class VendingMachine {
 				// should we add a check here to make sure user meant to do this -- "Are you sure you want to ...Y/N"
 				System.out.println("Thanks! Your new balance is " + NumberFormat.getCurrencyInstance().format(balance) + ".");
 			} 
-			else System.err.print("Sorry, invalid selection! Please enter a selection (1-4) that corresponds to amount to deposit"); 
+			else System.err.println("\nSorry, invalid selection! Please enter a selection (1-4) that corresponds to amount to deposit. ");
         }
-    	logTransaction(previousBalance, "Feed Money");
-
+    	logTransaction(previousBalance, "FEED MONEY");
     }
     
     
     public void selectProduct(){
         BigDecimal previousBalance = balance;
-        // need print statement of all slots and their vendable items
+        System.out.println(); // just wanted to add a line separator before list is shown
         for (int i = 0; i < vendableArr.length; i++) {
-           System.out.println(" [" + SLOTS[i] + "] " + vendableArr[i].getName() + " (" + NumberFormat.getCurrencyInstance().format(vendableArr[i].getPrice()) + ")");
-            // add quantity remaining!!
-            //need to let user select slots instead of numbers
-
+            System.out.println("[" + slots[i] + "] " + vendableArr[i].getName() + " (" +
+                    NumberFormat.getCurrencyInstance().format(vendableArr[i].getPrice()) + ")");
         }
-
-        boolean run = true;
-        while(run) {
-            System.out.print("Please enter option corresponding to your product selection: ");
-            String selection = console.nextLine().toUpperCase().trim();
-
-            for (int i = 0; i < SLOTS.length; i++) {
-                if (SLOTS[i].equals(selection)) {
-                    if (balance.compareTo(vendableArr[i].getPrice()) == -1) {
-                        System.out.println("Sorry, current balance insufficient");
-                    } else if (itemQuantityArr[i] == 0) {
-                        System.out.println("Item selected is Sold Out");
-                    } else {
-                        balance = balance.subtract(vendableArr[i].getPrice());
-                        System.out.println(vendableArr[i].getName() + " Price: " + NumberFormat.getCurrencyInstance().format(vendableArr[i].getPrice()) + " Remaining balance: " + NumberFormat.getCurrencyInstance().format(balance) + " : " +vendableArr[i].getSound());
-                        itemQuantityArr[i]--;
-                        logTransaction(previousBalance, vendableArr[i].getName() + " " + SLOTS[i]);
-                    }
-                } run = false;
+        System.out.print("\nPlease choose an option >>> ");
+        String selection = console.nextLine().toUpperCase().replaceAll("\\s", "");
+        int indexOfItem = -1;
+        for (int i = 0; i < slots.length; i++) {
+            if (slots[i].equals(selection)) indexOfItem = i;
+        }
+        if (indexOfItem == -1) System.out.println("Whoops! That is not a valid selection!");
+        else {
+            if (balance.compareTo(vendableArr[indexOfItem].getPrice()) < 0) {
+                System.out.println("Sorry, current balance insufficient! Please feed more money or select a different item.");
+            }
+            else if (itemQuantityArr[indexOfItem] == 0) {
+                System.out.println("\n*****Oh no! " + slots[indexOfItem] + " is SOLD OUT!*****\n");
+            }
+            else {
+                balance = balance.subtract(vendableArr[indexOfItem].getPrice());
+                System.out.println("\nNice! You purchased " + vendableArr[indexOfItem].getName() + " for " +
+                        NumberFormat.getCurrencyInstance().format(vendableArr[indexOfItem].getPrice()) +
+                        ", and your remaining balance is " + NumberFormat.getCurrencyInstance().format(balance) + ".\n"
+                        + vendableArr[indexOfItem].getSound());
+                itemQuantityArr[indexOfItem]--;
+                logTransaction(previousBalance, vendableArr[indexOfItem].getName() + " " + slots[indexOfItem]);
             }
         }
-
-
-
-
-
-
-            //use selection to find item in slots[]
-            //run a for loop to find an index in slots[]
-            //use index to find item in vendableArr
-            //if valid product is chosen >
-            //print item name, cost, and money remaining along with sound message
-            //after product dispensed, vm updates its balance and returns to purchase menu
-
-
-
-            //validate that selection is valid
-            //if not, send message telling user invalid selection and return to purchase menu run=false;
-            //if product sold out , user informed and return to purchase menu
-
-
-        }
+    }
 
     public void finishTransaction() {
         BigDecimal previousBalance = balance;
-        //calculate change
-        //reset balance to $0
         System.out.println("\nYour transaction is now complete. You may now collect your change.\n");
         this.getChange();
         balance = new BigDecimal("0.00");
         logTransaction(previousBalance, "GIVE CHANGE");
-
-        // make sure everything is restocked to 5
-        //return to main menu --> return to run somehow?
-
     }
 
     public void getChange(){
-        //BigDecimal previousBalance = balance;
         BigDecimal changeInPenniesBD = balance.multiply(new BigDecimal("100"));
         int changeInPennies = changeInPenniesBD.intValue();
         int numbersOfQuarters = 0;
@@ -175,120 +181,53 @@ public class VendingMachine {
             numberOfNickels = changeInPennies / 5;
             changeInPennies = changeInPennies % 5;
         }
-
-        System.out.println("Your change is: " + numbersOfQuarters + " Quarters, " + numberOfDimes + " Dimes, & " + numberOfNickels + " Nickels");
-
-        //logTransaction(previousBalance, "GIVE CHANGE");
-
-
-    }
-
-
-    public void createLogFile(){
-        String currentDirectory = System.getProperty("user.dir"); // get directory
-        File transactionLog = new File(currentDirectory + "/log.txt"); // create new file object
-
-        try {
-
-            if (!transactionLog.exists()) {
-                transactionLog.createNewFile();
-            }
-
-        } catch(Exception e){
-            System.out.println(e);
-        }
-        /*
-        feed money log
-        select product log - item picked and slot it was in
-        give change - finish transaction - create file as instance
-         */
+        System.out.println("Your change is: " + numbersOfQuarters + " Quarters, " + numberOfDimes + " Dimes, & " +
+                numberOfNickels + " Nickels");
     }
 
     public void logTransaction(BigDecimal previousBalance, String actionItem){
-        createLogFile();
         try (FileWriter fileWriter = new FileWriter(transactionLog,true);
                 PrintWriter pw = new PrintWriter(fileWriter)) { // try with resources
-            //transactionLog.createNewFile(); // create actual file
-            //collect data from transaction for printing
-            //PrintWriter dataOutput = new PrintWriter(transactionLog) {
                 DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
                 LocalDateTime currentDateTime = LocalDateTime.now();
                 String dateTimeFormatted = currentDateTime.format(dateFormat);
-                pw.println(dateTimeFormatted + " " + actionItem + NumberFormat.getCurrencyInstance().format(previousBalance)
+                pw.println(dateTimeFormatted + " " + actionItem + " " + NumberFormat.getCurrencyInstance().format(previousBalance)
                         + " " + NumberFormat.getCurrencyInstance().format(balance));
-
-
             }
         catch(Exception ex){
-            System.out.println(ex);
+            ex.printStackTrace();
         }
     }
 
-    public String[] getItemNames() {
-		return itemNames;
-	}
-
-	public void setItemNames(String[] itemNames) {
-		this.itemNames = itemNames;
-	}
-
-	public BigDecimal[] getItemPrices() {
-		return itemPrices;
-	}
-
-	public void setItemPrices(BigDecimal[] itemPrices) {
-		this.itemPrices = itemPrices;
-	}
-
 	public int[] getItemQuantityArr() {
 		return itemQuantityArr;
-	}
-
-	public void setItemQuantityArr(int[] itemQuantityArr) {
-		this.itemQuantityArr = itemQuantityArr;
 	}
 
 	public Scanner getConsole() {
 		return console;
 	}
 
-	public String[] getSLOTS() {
-		return SLOTS;
+	public String[] getSlots() {
+		return slots;
 	}
 	
 	public Vendable[] getVendableArr(){
         return vendableArr;
     }
 
-	public void setVendableArr(Vendable[] arrayOfVendables) {
-		this.vendableArr = arrayOfVendables;
-	}
-
 	public BigDecimal getBalance() {
         return balance;
     }
 
-    /*
-    String path = "vendingmachine.csv";
-        File inventoryFile = new File(path);
+    public File getInputFile() {
+        return inputFile;
+    }
 
-        if(!inventoryFile.exists()){
-            System.out.println("Sorry, file does not exist");
-        }
-        if(!inventoryFile.isFile()){
-            System.out.println("Sorry, file not a valid file");
-        }
+    public File getTransactionLog() {
+        return transactionLog;
+    }
 
-        try(Scanner fileScanner = new Scanner(inventoryFile)){
-            while(fileScanner.hasNextLine()){
-                String line = fileScanner.nextLine();
-                System.out.println(line);
-            }
-
-        } catch(FileNotFoundException e) {
-            System.err.println("Sorry, file not found");
-            e.printStackTrace();
-            }
-     */
-
+    public BigDecimal getPreviousBalance() {
+        return previousBalance;
+    }
 }
