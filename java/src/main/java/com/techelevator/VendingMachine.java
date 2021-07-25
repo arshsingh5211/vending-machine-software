@@ -99,8 +99,9 @@ public class VendingMachine {
             System.out.println("[" + slots[i] + "] " + vendableArr[i].getName() + " (" +
                     NumberFormat.getCurrencyInstance().format(vendableArr[i].getPrice()) + ")");
         }
-        System.out.print("\nPlease choose an option >>> ");
-        String selection = console.nextLine().toUpperCase().replaceAll("\\s", ""); //this line might be the issue
+        System.out.println();
+        System.out.print("Please choose an option >>> ");
+        String selection = console.next().toUpperCase().trim(); //this line might be the issue
         int indexOfItem = -1;
         for (int i = 0; i < slots.length; i++) {
             if (slots[i].equals(selection)) indexOfItem = i;
@@ -129,9 +130,9 @@ public class VendingMachine {
         BigDecimal previousBalance = balance;
         System.out.println("\nYour transaction is now complete.\n");
 
-        balance = new BigDecimal("0.00");
         if (previousBalance.compareTo(new BigDecimal("0.00"))!=0){
             this.getChange();
+            balance = new BigDecimal("0.00");
             logTransaction(previousBalance, "GIVE CHANGE");
         }
 
@@ -152,8 +153,8 @@ public class VendingMachine {
             numberOfNickels = changeInPennies / 5;
             changeInPennies = changeInPennies % 5;
         }
-        System.out.println("Your change is: " + numbersOfQuarters + " Quarters, " + numberOfDimes + " Dimes, & " +
-                numberOfNickels + " Nickels");
+        System.out.println("Your change is: " + numbersOfQuarters + " Quarter(s), " + numberOfDimes + " Dime(s), and " +
+                numberOfNickels + " Nickel(s)");
     }
 
     public void logTransaction(BigDecimal previousBalance, String actionItem){

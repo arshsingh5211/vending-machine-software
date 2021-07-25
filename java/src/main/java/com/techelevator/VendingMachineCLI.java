@@ -29,6 +29,9 @@ public class VendingMachineCLI {
 
 	public void run() {
 		while (true) {
+			System.out.println("\n---------------------------");
+			System.out.println("Welcome to Vendo-Matic 800!");
+			System.out.println("---------------------------");
 			String choice = (String) menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);
 
 			if (choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
@@ -39,7 +42,9 @@ public class VendingMachineCLI {
 					this.purchaseMenu();
 			} 
 			else if (choice.equals(MAIN_MENU_OPTION_EXIT)) { // exits system not exits to main menu as README asked
-		        System.out.println("\nThank you for using Vendo-Matic 800! Have a nice day.");
+				System.out.println("\n------------------------------------------------------");
+				System.out.println("Thank you for using Vendo-Matic 800! Have a nice day.");
+				System.out.println("------------------------------------------------------");
 				System.exit(0);
 			}
 		}
