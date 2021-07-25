@@ -21,22 +21,6 @@ public class VendingMachine {
     private BigDecimal previousBalance;
     private Scanner console = new Scanner(System.in);
 
-    /*
-    What I did:
-        1) added comments for to-do list for tomm
-        2) fixed formatting of strings, added regex for spaces when user selects slot in selectProduct()
-                --- should we do that for all user input in console?
-                --- Please choose an option >>>        3
-                --- ***        3 is not a valid option ***
-                --- regex will take out all spaces for evaluation
-        3) cleaned up code (shortened loop in selectProduct(), got rid of unused variables/methods,
-            extracted constructor in stockInventory() method, switched to switch,
-            changed itemQuantityArr using Arrays.fill(), etc)
-        4) we want to stock based on vendingmachine.csv instead of creating objects like before, so just did a
-            general fileReader thing to read from that file, see stockInventory()
-
-        STILL LEFT TO DO BELOW:
-     */
 
 
     // how do we close the scanner?
@@ -68,19 +52,15 @@ public class VendingMachine {
                 String[] lineArr = line.trim().split("\\|");
                 slots[lineNum - 1] = lineArr[0];
                 BigDecimal priceBD = new BigDecimal(lineArr[2]);
-                switch (lineArr[3]) {
-                    case "Chip":
-                        vendableArr[lineNum - 1] = new Chips(priceBD, lineArr[1]);
-                        break;
-                    case "Candy":
-                        vendableArr[lineNum - 1] = new Candy(priceBD, lineArr[1]);
-                        break;
-                    case "Beverages":
-                        vendableArr[lineNum - 1] = new Beverages(priceBD, lineArr[1]);
-                        break;
-                    default:
-                        vendableArr[lineNum - 1] = new Gum(priceBD, lineArr[1]);
-                        break;
+                //assigning vendable objects based on lineArr[3]
+                if (lineArr[3].equals("Chip")){
+                    vendableArr[lineNum-1] = new Chips(priceBD, lineArr[1]);
+                }else if (lineArr[3].equals("Candy")){
+                    vendableArr[lineNum-1] = new Candy(priceBD, lineArr[1]);
+                }else if (lineArr[3].equals("Drink")){
+                    vendableArr[lineNum-1] = new Beverages(priceBD, lineArr[1]);
+                }else {
+                    vendableArr[lineNum-1] = new Gum(priceBD, lineArr[1]);
                 }
                 lineNum++;
             }
@@ -118,7 +98,7 @@ public class VendingMachine {
 				run = false;
 				// should we add a check here to make sure user meant to do this -- "Are you sure you want to ...Y/N"
 				System.out.println("Thanks! Your new balance is " + NumberFormat.getCurrencyInstance().format(balance) + ".");
-			} 
+			}
 			else System.err.println("\nSorry, invalid selection! Please enter a selection (1-4) that corresponds to amount to deposit. ");
         }
     	logTransaction(previousBalance, "FEED MONEY");
