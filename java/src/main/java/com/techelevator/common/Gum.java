@@ -1,25 +1,14 @@
-package com.techelevator;
+package com.techelevator.common;
 
 import java.math.BigDecimal;
 
-public class Gum implements Vendable{
+public class Gum extends Item {
     private BigDecimal price;
     private String name;
     private final String SOUND = "Chew, Chew, Yum!";
 
     public Gum(BigDecimal price, String name) {
-        this.price = price;
-        this.name = name;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public BigDecimal getPrice() {
-        return price;
+        super(price, name);
     }
 
     @Override

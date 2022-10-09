@@ -1,4 +1,6 @@
-package com.techelevator;
+package com.techelevator.common;
+
+import com.techelevator.common.*;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -12,7 +14,7 @@ public class VendingMachine {
     private BigDecimal balance = new BigDecimal("0.00");
     private String[] slots = new String[16];
     private int[] itemQuantityArr = new int[16];
-    private Vendable[] vendableArr = new Vendable[16];
+    private Item[] vendableArr = new Item[16];
     private File inputFile = new File("vendingmachine.csv");
     private File transactionLog = new File("log.txt");
     private BigDecimal previousBalance;
@@ -187,7 +189,7 @@ public class VendingMachine {
 		return slots;
 	}
 
-	public Vendable[] getVendableArr(){
+	public Item[] getVendableArr(){
         return vendableArr;
     }
 

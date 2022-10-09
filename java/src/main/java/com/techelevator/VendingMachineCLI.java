@@ -1,12 +1,7 @@
 package com.techelevator;
 
+import com.techelevator.common.VendingMachine;
 import com.techelevator.view.Menu;
-
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.InputMismatchException;
-import java.util.Scanner;
 
 public class VendingMachineCLI {
 
