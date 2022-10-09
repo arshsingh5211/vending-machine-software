@@ -1,7 +1,5 @@
 package com.techelevator.common;
 
-import com.techelevator.common.*;
-
 import java.io.*;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -12,13 +10,13 @@ import java.util.Scanner;
 
 public class VendingMachine {
     private BigDecimal balance = new BigDecimal("0.00");
-    private String[] slots = new String[16];
-    private int[] itemQuantityArr = new int[16];
-    private Item[] vendableArr = new Item[16];
-    private File inputFile = new File("vendingmachine.csv");
-    private File transactionLog = new File("log.txt");
+    private final String[] slots = new String[16];
+    private final int[] itemQuantityArr = new int[16];
+    private final Item[] items = new Item[16];
+    private final File inputFile = new File("vendingmachine.csv");
+    private final File transactionLog = new File("log.txt");
     private BigDecimal previousBalance;
-    private Scanner console = new Scanner(System.in);
+    private final Scanner console = new Scanner(System.in);
 
 
     // Feed Money on log should be $5.00 $5.00 (example) like in README not $0 $5
@@ -36,15 +34,16 @@ public class VendingMachine {
                 String[] lineArr = line.trim().split("\\|");
                 slots[lineNum - 1] = lineArr[0];
                 BigDecimal priceBD = new BigDecimal(lineArr[2]);
-                if (lineArr[3].equals("Chip")){
-                    vendableArr[lineNum-1] = new Chips(priceBD, lineArr[1]);
-                }else if (lineArr[3].equals("Candy")){
-                    vendableArr[lineNum-1] = new Candy(priceBD, lineArr[1]);
-                }else if (lineArr[3].equals("Drink")){
-                    vendableArr[lineNum-1] = new Beverages(priceBD, lineArr[1]);
-                }else {
-                    vendableArr[lineNum-1] = new Gum(priceBD, lineArr[1]);
+                if (lineArr[3].equalsIgnoreCase("Chip")){
+                    items[lineNum-1] = new Chips(priceBD, lineArr[1]);
                 }
+                else if (lineArr[3].equalsIgnoreCase("Candy")){
+                    items[lineNum-1] = new Candy(priceBD, lineArr[1]);
+                }
+                else if (lineArr[3].equalsIgnoreCase("Drink")){
+                    items[lineNum-1] = new Beverages(priceBD, lineArr[1]);
+                }
+                else items[lineNum-1] = new Gum(priceBD, lineArr[1]);
                 lineNum++;
             }
         } catch (FileNotFoundException e) {
@@ -54,10 +53,10 @@ public class VendingMachine {
     }
 
     public void displayInventory(){
-        for (int i = 0; i < vendableArr.length; i++) {
+        for (int i = 0; i < items.length; i++) {
             String quantityUpdate = itemQuantityArr[i] > 0 ? Integer.toString(itemQuantityArr[i]) : "SOLD OUT!!";
-        	System.out.println("[" + slots[i] + "] " + vendableArr[i].getName() + ": " +
-        			NumberFormat.getCurrencyInstance().format(vendableArr[i].getPrice()) + " (Qty: " + quantityUpdate + ")");
+        	System.out.println("[" + slots[i] + "] " + items[i].getName() + ": " +
+        			NumberFormat.getCurrencyInstance().format(items[i].getPrice()) + " (Qty: " + quantityUpdate + ")");
         }
         System.out.println("\nPlease press [enter] to go back to Main Menu:");
         console.nextLine();  //make the user hit ENTER before continuing
@@ -100,9 +99,9 @@ public class VendingMachine {
     public void selectProduct(){
         BigDecimal previousBalance = balance;
         System.out.println(); // just wanted to add a line separator before list is shown
-        for (int i = 0; i < vendableArr.length; i++) {
-            System.out.println("[" + slots[i] + "] " + vendableArr[i].getName() + " (" +
-                    NumberFormat.getCurrencyInstance().format(vendableArr[i].getPrice()) + ")");
+        for (int i = 0; i < items.length; i++) {
+            System.out.println("[" + slots[i] + "] " + items[i].getName() + " (" +
+                    NumberFormat.getCurrencyInstance().format(items[i].getPrice()) + ")");
         }
         System.out.println();
         System.out.print("Please choose an option >>> ");
@@ -113,20 +112,20 @@ public class VendingMachine {
         }
         if (indexOfItem == -1) System.out.println("Whoops! That is not a valid selection!");
         else {
-            if (balance.compareTo(vendableArr[indexOfItem].getPrice()) < 0) {
+            if (balance.compareTo(items[indexOfItem].getPrice()) < 0) {
                 System.out.println("Sorry, current balance insufficient! Please feed more money or select a different item.");
             }
             else if (itemQuantityArr[indexOfItem] == 0) {
                 System.out.println("\n*****Oh no! " + slots[indexOfItem] + " is SOLD OUT!*****\n");
             }
             else {
-                balance = balance.subtract(vendableArr[indexOfItem].getPrice());
-                System.out.println("\nNice! You purchased " + vendableArr[indexOfItem].getName() + " for " +
-                        NumberFormat.getCurrencyInstance().format(vendableArr[indexOfItem].getPrice()) +
+                balance = balance.subtract(items[indexOfItem].getPrice());
+                System.out.println("\nNice! You purchased " + items[indexOfItem].getName() + " for " +
+                        NumberFormat.getCurrencyInstance().format(items[indexOfItem].getPrice()) +
                         ", and your remaining balance is " + NumberFormat.getCurrencyInstance().format(balance) + ".\n"
-                        + vendableArr[indexOfItem].getSound());
+                        + items[indexOfItem].getSound());
                 itemQuantityArr[indexOfItem]--;
-                logTransaction(previousBalance, vendableArr[indexOfItem].getName() + " " + slots[indexOfItem]);
+                logTransaction(previousBalance, items[indexOfItem].getName() + " " + slots[indexOfItem]);
             }
         }
     }
@@ -189,8 +188,8 @@ public class VendingMachine {
 		return slots;
 	}
 
-	public Item[] getVendableArr(){
-        return vendableArr;
+	public Item[] getItems(){
+        return items;
     }
 
 	public BigDecimal getBalance() {
