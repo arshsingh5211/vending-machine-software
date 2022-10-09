@@ -1,7 +1,5 @@
 package com.techelevator.common;
 
-import com.techelevator.Item;
-
 import java.math.BigDecimal;
 
 public class Chips extends Item {
