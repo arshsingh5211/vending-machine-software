@@ -34,13 +34,14 @@ public class VendingMachine {
                 String[] lineArr = line.trim().split("\\|");
                 slots[lineNum - 1] = lineArr[0];
                 BigDecimal priceBD = new BigDecimal(lineArr[2]);
-                if (lineArr[3].equalsIgnoreCase("Chip")){
+                String itemType = lineArr[3];
+                if (itemType.equalsIgnoreCase("Chip")){
                     items[lineNum-1] = new Chips(priceBD, lineArr[1]);
                 }
-                else if (lineArr[3].equalsIgnoreCase("Candy")){
+                else if (itemType.equalsIgnoreCase("Candy")){
                     items[lineNum-1] = new Candy(priceBD, lineArr[1]);
                 }
-                else if (lineArr[3].equalsIgnoreCase("Drink")){
+                else if (itemType.equalsIgnoreCase("Drink")){
                     items[lineNum-1] = new Beverages(priceBD, lineArr[1]);
                 }
                 else items[lineNum-1] = new Gum(priceBD, lineArr[1]);
@@ -105,7 +106,7 @@ public class VendingMachine {
         }
         System.out.println();
         System.out.print("Please choose an option >>> ");
-        String selection = console.next().toUpperCase().trim(); //this line might be the issue
+        String selection = console.nextLine().toUpperCase().trim().replaceAll("\\s", ""); //this line might be the issue
         int indexOfItem = -1;
         for (int i = 0; i < slots.length; i++) {
             if (slots[i].equals(selection)) indexOfItem = i;
@@ -134,8 +135,8 @@ public class VendingMachine {
         BigDecimal previousBalance = balance;
         System.out.println("\nYour transaction is now complete.");
 
-        if (previousBalance.compareTo(new BigDecimal("0.00"))!=0){
-            this.getChange();
+        if (previousBalance.compareTo(new BigDecimal("0.00")) != 0){
+            getChange();
             balance = new BigDecimal("0.00");
             logTransaction(previousBalance, "GIVE CHANGE");
         }
